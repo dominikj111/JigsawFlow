@@ -1,0 +1,53 @@
+<!-- markdownlint-disable MD036 -->
+
+# JigsawFlow License
+
+This project uses a dual licensing approach to support both open source development and educational use:
+
+## Code License
+
+**CC0 1.0 Universal (Public Domain Dedication)**
+
+The JigsawFlow code, including all source code, implementation examples, and technical specifications, is dedicated to the public domain under CC0 1.0 Universal.
+
+To the extent possible under law, the contributors have waived all copyright and related or neighboring rights to this work.
+
+**You can:**
+
+- Copy, modify, distribute, and use the code for any purpose
+- Use it commercially without restrictions
+- No attribution required (though appreciated)
+
+For the full legal text, see: <https://creativecommons.org/publicdomain/zero/1.0/>
+
+## Documentation License
+
+**Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)**
+
+All documentation, tutorials, guides, and educational materials are licensed under CC BY-SA 4.0.
+
+**You can:**
+
+- Share and adapt the materials
+- Use them for any purpose, including commercial
+
+**You must:**
+
+- Give appropriate credit to the original authors
+- Indicate if changes were made
+- Distribute derivative works under the same license
+
+For the full legal text, see: <https://creativecommons.org/licenses/by-sa/4.0/>
+
+---
+
+## Rationale
+
+This dual licensing approach ensures:
+
+- **Code remains freely usable** without legal barriers for any implementation
+- **Documentation quality is maintained** through attribution and share-alike requirements
+- **Community contributions** are encouraged while preserving educational value
+- **Enterprise adoption** is simplified with no code licensing restrictions
+
+We believe in open, collaborative development that benefits the entire software engineering community.
