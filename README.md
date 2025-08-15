@@ -10,9 +10,12 @@
   
   _An enterprise-grade pattern for building modular software systems_
   
+  > ⚠️ **Work in Progress**: This is an evolving architectural pattern. The specification and examples are actively being developed and refined based on real-world implementations and community feedback.
+  
 [![GitHub Stars](https://img.shields.io/github/stars/dominikj111/JigsawFlow?style=flat-square)](https://github.com/dominikj111/JigsawFlow)
 [![Issues](https://img.shields.io/github/issues/dominikj111/JigsawFlow?style=flat-square)](https://github.com/dominikj111/JigsawFlow/issues)
 [![License](https://img.shields.io/github/license/dominikj111/JigsawFlow?style=flat-square)](LICENSE)
+![Status](https://img.shields.io/badge/status-work%20in%20progress-yellow?style=flat-square)
 </div>
 
 ## Overview
@@ -257,10 +260,12 @@ This repository contains comprehensive documentation to help you understand and 
 
 ### **For Developers**
 
-1. **Explore Examples**: Review reference implementations in your preferred language (Work In Progress)
+1. **Explore Examples**: Review reference implementations in your preferred language _(implementations in progress)_
 2. **Define Interfaces**: Create trait/interface definitions for your domain
 3. **Build Modules**: Implement interface-compliant modules
 4. **Compose Applications**: Use DI registry to assemble functionality
+
+> **Note**: Reference implementations are currently being developed. See [implementation-examples.md](implementation-examples.md) for current progress and conceptual examples.
 
 ### **For Enterprises**
 
@@ -287,12 +292,14 @@ This repository contains comprehensive documentation to help you understand and 
 - **Enterprise Adoption**: Applications successfully built using JigsawFlow pattern
 - **Cross-Language Support**: Implementation across multiple programming languages
 
-### **Roadmap Milestones**
+### **Development Roadmap**
 
-- **Q1**: Core pattern specification and reference implementation
-- **Q2**: Developer tooling and documentation
-- **Q3**: RuntimeSwap module and dynamic loading capabilities
-- **Q4**: Central registry and community contribution platform
+- **Q1 2025**: Core pattern specification and reference implementation _(in progress)_
+- **Q2 2025**: Developer tooling and documentation _(in progress)_
+- **Q3 2025**: RuntimeSwap module and dynamic loading capabilities _(planned)_
+- **Q4 2025**: Central registry and community contribution platform _(planned)_
+
+> **Current Focus**: Refining core architectural patterns and developing reference implementations based on real-world usage in production systems.
 
 ---
 

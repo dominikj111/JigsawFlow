@@ -418,4 +418,4 @@ Ensure safe module replacement during runtime:
 
 ---
 
-This document provides practical guidance for implementing JigsawFlow applications effectively. As the pattern evolves and the community grows, the document is still in review phase and these practices will be refined based on real-world experience and feedback.
+> ⚠️ **Work in Progress**: This document provides practical guidance for implementing JigsawFlow applications effectively and is actively being developed and refined based on real-world implementations and community feedback. As the pattern evolves and the community grows, these practices will continue to be refined based on real-world experience and feedback.
