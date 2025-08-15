@@ -10,9 +10,9 @@
   
   _An enterprise-grade pattern for building modular software systems_
   
-[![GitHub Stars](https://img.shields.io/github/stars/yourusername/jigsawflow?style=flat-square)](https://github.com/yourusername/jigsawflow)
-[![Issues](https://img.shields.io/github/issues/yourusername/jigsawflow?style=flat-square)](https://github.com/yourusername/jigsawflow/issues)
-[![License](https://img.shields.io/github/license/yourusername/jigsawflow?style=flat-square)](LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/dominikj111/JigsawFlow?style=flat-square)](https://github.com/dominikj111/JigsawFlow)
+[![Issues](https://img.shields.io/github/issues/dominikj111/JigsawFlow?style=flat-square)](https://github.com/dominikj111/JigsawFlow/issues)
+[![License](https://img.shields.io/github/license/dominikj111/JigsawFlow?style=flat-square)](LICENSE)
 </div>
 
 ## Overview
@@ -303,7 +303,7 @@ We welcome contributions from developers, architects, and industrial automation 
 **Get Involved**:
 
 - 📖 Read our [Contributing Guidelines](CONTRIBUTING.md)
-- 💬 Join discussions in [GitHub Issues](https://github.com/yourusername/jigsawflow/issues)
+- 💬 Join discussions in [GitHub Issues](https://github.com/dominikj111/JigsawFlow/issues)
 - 🔧 Submit pull requests for improvements
 - 📝 Share your JigsawFlow success stories
 
