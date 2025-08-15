@@ -14,7 +14,7 @@
   
 [![GitHub Stars](https://img.shields.io/github/stars/dominikj111/JigsawFlow?style=flat-square)](https://github.com/dominikj111/JigsawFlow)
 [![Issues](https://img.shields.io/github/issues/dominikj111/JigsawFlow?style=flat-square)](https://github.com/dominikj111/JigsawFlow/issues)
-[![License](https://img.shields.io/github/license/dominikj111/JigsawFlow?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/badge/license-CC0%201.0%20%2B%20CC%20BY--SA%204.0-blue?style=flat-square)](LICENSE)
 ![Status](https://img.shields.io/badge/status-work%20in%20progress-yellow?style=flat-square)
 </div>
 
