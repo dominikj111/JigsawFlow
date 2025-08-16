@@ -46,13 +46,13 @@ Modules must never directly depend on other modules. Any shared functionality mu
 
 ### Facade Pattern for External Dependencies
 
-All language standard utilities and environmental access must be wrapped through facade functions registered in the DI registry.
+All language standard utilities and environmental access must be wrapped through facade functions registered in the singleton registry.
 
 **Mandatory Wrapping:**
 
-- **File System Access**: Wrap all file I/O operations through DI-registered facades
+- **File System Access**: Wrap all file I/O operations through singleton registry facades
 - **Network Operations**: Abstract all network calls behind interface facades
-- **Environment Variables**: Access system environment through DI-registered functions
+- **Environment Variables**: Access system environment through singleton registry functions
 - **Time/Date Functions**: Wrap time operations for consistent testing and mocking
 - **Random Number Generation**: Abstract randomness for deterministic testing
 - **System Calls**: Wrap all OS-specific operations through facades
@@ -63,14 +63,14 @@ All language standard utilities and environmental access must be wrapped through
 - **Deterministic Testing**: Control all external inputs for reproducible test results
 - **Isolated Unit Tests**: Test module logic without external system dependencies
 - **Simplified Test Setup**: No complex mocking frameworks required
-- **Natural Dependency Injection**: DI registry provides seamless mock substitution
+- **Natural Service Substitution**: Singleton registry provides seamless mock substitution
 
 **Implementation Pattern:**
 
 1. Create facade interfaces for all external operations
-2. Register concrete implementations in DI registry during normal operation
+2. Register concrete implementations in singleton registry during normal operation
 3. Register mock implementations during testing
-4. Modules access external functionality only through DI registry facades
+4. Modules access external functionality only through singleton registry facades
 
 ## Core Implementation Patterns
 
@@ -115,23 +115,15 @@ Pre-calculation can be triggered via a deliberate first access to warm caches.
 - Implement cache invalidation for dynamic data
 - Consider memory constraints in long-running applications
 
-**Cross-Module Caching:**
-
-This is an automatic DI registry renewal pattern.
-
-- Use DI registry for shared cache instances
-- Implement cache coordination for distributed scenarios
-- Handle cache consistency across module updates
-
 ---
 
 ### Builder Pattern Integration
 
-Leverage the DI registry's function registration capabilities to implement flexible object construction patterns.
+Leverage the singleton registry's function registration capabilities to implement flexible object construction patterns.
 
 #### Factory Function Registration
 
-Register builder functions as first-class citizens in the DI registry:
+Register builder functions as first-class citizens in the singleton registry:
 
 **Simple Builders:**
 
@@ -142,7 +134,7 @@ Register builder functions as first-class citizens in the DI registry:
 
 - Break construction into discrete, testable steps
 - Register intermediate builder stages as separate functions
-- Enable builder composition through DI registry coordination
+- Enable builder composition through singleton registry coordination
 
 #### Builder Pattern Benefits
 
@@ -189,7 +181,7 @@ Define module contracts before implementation:
 2. Establish input/output contracts and data formats
 3. Explore generic trait/interface collections—modules may interoperate in ways not originally anticipated
 4. Implement module logic to satisfy interface contracts
-5. Register module capabilities through DI registry
+5. Register module capabilities through singleton registry
 
 **Benefits:**
 
@@ -200,7 +192,7 @@ Define module contracts before implementation:
 
 ### Dependency Declaration
 
-Explicitly declare module dependencies through the DI registry:
+Explicitly declare module dependencies through the singleton registry:
 
 **Patterns:**
 
@@ -231,7 +223,7 @@ Explicitly declare module dependencies through the DI registry:
 
 **Intra-Application Communication:**
 
-- Prefer direct DI registry access for same-process modules
+- Prefer direct singleton registry access for same-process modules
 - Minimize serialization overhead for local communication
 - Use efficient data structures for high-frequency interactions
 
@@ -253,7 +245,7 @@ These are generic recommendations for software development, not tied to the Jigs
 
 **Resource Sharing:**
 
-- Use DI registry for sharing expensive resources across modules
+- Use singleton registry for sharing expensive resources across modules
 - Consider resource pooling for frequently created/destroyed objects
 
 ---
@@ -306,7 +298,7 @@ Ensure safe module replacement during runtime:
 
 **Integration Testing:**
 
-- Test module interactions through DI registry
+- Test module interactions through singleton registry
 - Verify communication patterns and data flow
 - Test module replacement and hot-swapping scenarios
 

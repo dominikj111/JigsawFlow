@@ -24,31 +24,59 @@ JigsawFlow is a revolutionary architecture pattern that transforms how enterpris
 
 **Core Philosophy**: Following the proven PLC paradigm, JigsawFlow applications emerge through the strategic composition of specialized modules, each focused on solving a specific domain problem. Just as PLC units contribute distinct capabilities to form comprehensive industrial control systems, JigsawFlow modules bring focused expertise—user management, data persistence, communication protocols—that collectively shape the overall application architecture.
 
-Unlike traditional software architecture approaches that require extensive glue code and tight coupling, JigsawFlow applications emerge organically from reusable, interface-compliant modules managed through a centralized dependency injection registry.
+Unlike traditional software architecture approaches that require extensive glue code and tight coupling, JigsawFlow applications emerge organically from reusable, interface-compliant modules managed through a centralized singleton registry.
 
 ---
 
 ## What Makes JigsawFlow Different?
 
-### **Beyond Traditional Dependency Injection**
+### **Singleton Registry Architecture vs Traditional DI**
 
-While JigsawFlow uses dependency injection at its core, it's fundamentally different from standard DI frameworks:
+JigsawFlow uses a singleton registry pattern, not traditional dependency injection:
 
-**Traditional DI** (Type-Based):
+**Traditional DI** (Constructor Injection):
 
 ```rust
-// Framework-heavy, type-focused
+// Framework-heavy, lifecycle management
 container.register::<DatabaseService, PostgresImpl>();
 let db = container.resolve::<DatabaseService>();
 ```
 
-**JigsawFlow DI** (Capability-Based):
+**JigsawFlow Singleton Registry** (Type-Based Singleton Access):
 
 ```rust
-// Capability-focused, emergent composition
-registry.provide_capability::<Storage>(postgres_module);
-let storage = registry.request_capability::<Storage>();
+// Type-focused, hot-swappable singletons
+registry.register::<Storage>(postgres_module);
+let storage = registry.get::<Storage>();
 ```
+
+### **Singleton Registry vs Dependency Injection**
+
+JigsawFlow uses a **singleton registry pattern**, not traditional dependency injection:
+
+**Traditional DI:**
+
+- Constructor/setter injection with framework lifecycle management
+- Compile-time dependency resolution and object graph construction
+- Framework controls object creation and disposal
+- Complex object graph management
+
+**JigsawFlow Singleton Registry:**
+
+- Global singleton store accessed by trait/interface/type
+- Runtime module discovery and hot-swapping
+- Service locator pattern with type safety
+- Write-once, read-many access pattern optimized for performance
+- Thread-safe singleton replacement without application restart
+
+**Language-Specific Implementations:**
+
+- **Rust**: Trait-based registry (`T: Send + Sync + 'static`)
+- **Java/C#**: Interface-based registry
+- **TypeScript**: Type-based registry
+- **Go**: Interface-based registry
+
+This approach enables the core JigsawFlow benefits: hot-swappable modules, runtime composition, and zero-restart module replacement. The registry functions as a global service locator where modules register their implementations and discover the services they need.
 
 ### **Unix Microkernel Principles at Application Level**
 
@@ -58,7 +86,7 @@ JigsawFlow applies proven Unix design principles to application architecture:
 | ---------------------------------- | --------------------------------------------- |
 | "Everything is a file"             | "Everything is a capability"                  |
 | Small tools that do one thing well | Small modules with focused responsibilities   |
-| Compose via pipes                  | Compose via capability registry               |
+| Compose via pipes                  | Compose via singleton registry                |
 | Process independence               | Module independence with graceful degradation |
 | Hot-swappable kernel modules       | Hot-swappable application modules             |
 
@@ -89,20 +117,22 @@ JigsawFlow draws inspiration from proven industrial automation patterns:
 - **Rapid Application Assembly**: Build complex systems by composing pre-built modules
 - **Zero-Restart Hot-Swapping**: Replace functionality without application downtime (Phase 1 supports DI singleton replacement; Phase 2 adds dynamic library loading via RuntimeSwap)
 - **Polyglot System Architecture**: Build cross-language applications through communication modules (Bluetooth, P2P, TCP/IP, UDP, Modbus) that enable JigsawFlow implementations across Java, C#, JavaScript/TypeScript, Rust, and other languages to interoperate seamlessly
-- **Minimal Integration Overhead**: Dependency injection handles module coordination
+- **Minimal Integration Overhead**: Singleton registry handles module coordination
 - **Community-Driven Ecosystem**: Shared module repository for common functionality
 
 ---
 
 ## Core Architecture
 
-### **Dependency Injection Registry**
+### **Singleton Registry**
 
-The heart of JigsawFlow is a trait/interface-based dependency injection registry - an object that returns singletons by trait/interface - that:
+The heart of JigsawFlow is a trait/interface-based singleton registry - a global singleton store that returns instances by trait/interface/type - that:
 
-- Registers modules by their capability interfaces, not concrete types
+- Registers modules by their service interfaces, not concrete types
 - Enables singleton replacement without application restart
 - Provides language-agnostic service discovery
+- Functions as a thread-safe service locator for modular services
+- Supports trait registry (Rust), interface registry (Java/C#), and type registry (TypeScript) patterns
 
 ### **Module Interface Compliance**
 
@@ -115,7 +145,7 @@ Every JigsawFlow module implements standardized interfaces for:
 
 Applications are built through **additive composition**:
 
-1. Start with minimal core (DI registry + main thread module)
+1. Start with minimal core (singleton registry + main thread module)
 2. Add functionality by installing interface-compliant modules
 3. Modules self-register their capabilities upon loading (modules can focus on or contain multiple solutions)
 
@@ -125,7 +155,7 @@ JigsawFlow modules must adhere to three fundamental architectural constraints:
 
 - **Offline-First Design**: Modules must function when network connectivity is lost (WiFi down, cables cut) but may utilize network protocols when available
 - **Module Independence**: Modules must not directly depend on other modules. For shared functionality, prefer extracting it into a separate shared module; when dependencies are unavailable, modules should log and degrade gracefully
-- **Facade Pattern**: All external dependencies (file I/O, environment access, system calls) must be wrapped through DI-registered facades
+- **Facade Pattern**: All external dependencies (file I/O, environment access, system calls) must be wrapped through singleton registry facades
 
 _See [best-practices.md](best-practices.md) for detailed implementation guidance and testing strategies._
 
@@ -173,7 +203,7 @@ Simplify complex distributed system management:
 | Pattern                          | What it is                          | Where JigsawFlow differs                                                                 |
 | -------------------------------- | ----------------------------------- | ---------------------------------------------------------------------------------------- |
 | Microkernel / Plug‑in            | Minimal core with plug‑ins          | You formalize plug‑in capabilities and offline‑first guarantees                          |
-| Hexagonal (Ports & Adapters)     | Domain wrapped by ports             | Ports/adapters map to capability interfaces; registry discovers/binds                    |
+| Hexagonal (Ports & Adapters)     | Domain wrapped by ports             | Ports/adapters map to service interfaces; singleton registry discovers/binds             |
 | Service‑oriented / Microservices | Network‑separated services          | JigsawFlow can be in‑proc or cross‑proc; modules are composable without service overhead |
 | Actor model                      | Isolated entities exchange messages | Your modules can adopt actors internally; the bus covers inter‑module traffic            |
 | OSGi/Module systems              | Runtime module lifecycles           | You keep it language‑agnostic and simpler (no classloader tricks)                        |
@@ -186,7 +216,7 @@ Simplify complex distributed system management:
 
 Establish a comprehensive collection of standardized traits/interfaces for common functionality across all supported languages. This standardization addresses two critical areas:
 
-**1. DI Registry Capability Standards**
+**1. Singleton Registry Standards**
 
 - Define problem-solution contracts through standardized trait/interface definitions
 - Enable community-driven module development where modules provide solutions to well-defined problems
@@ -208,18 +238,18 @@ This approach mirrors industrial automation standards, where discussed contracts
 
 JigsawFlow enables revolutionary GUI architecture where applications become pure business logic while GUI rendering becomes a dedicated capability module:
 
-- **Contract-Based GUI Rendering**: Applications send declarative UI specifications via capability registry events, eliminating the need for GUI libraries in business logic
+- **Contract-Based GUI Rendering**: Applications send declarative UI specifications via singleton registry events, eliminating the need for GUI libraries in business logic
 - **Language-Agnostic GUI Services**: Backend services in Rust, Python, Go, etc. leverage unified GUI infrastructure without language-specific bindings
 - **Hot-Swappable UI Components**: GUI modules update independently from application logic, enabling live UI theming and layout changes
 - **Network-Distributed Applications**: P2P secure connections enable GUI modules to run on different machines—applications become truly distributed without installation requirements
-- **WorkFlows OS Integration**: GUI capability modules serve as core system services, providing unified desktop experiences across all applications
+- **WorkFlows OS Integration**: GUI service modules serve as core system services, providing unified desktop experiences across all applications
 
 **Revolutionary Distribution Model**
 
 The most exciting aspect: applications no longer require local installation. Through secure P2P networking:
 
 - Business logic runs on remote nodes
-- GUI renders locally via capability contracts
+- GUI renders locally via service contracts
 - Applications distribute dynamically across network topology
 - Zero-installation application ecosystem emerges naturally
 

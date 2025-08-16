@@ -58,7 +58,7 @@ Thank you for your interest in contributing to JigsawFlow! We welcome contributi
 **Reference Implementations**
 
 - Implement JigsawFlow patterns in various programming languages
-- Create dependency injection registry implementations
+- Create singleton registry implementations
 - Build core architectural components following JigsawFlow principles
 
 ### 🔧 **Module Development**

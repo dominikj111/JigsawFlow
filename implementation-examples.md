@@ -20,7 +20,7 @@ JigsawFlow emerged from the need to define applications as collections of autono
 
 **Core Architecture:**
 
-- **Robust DI Registry**: Trait-based dependency injection system managing module capabilities
+- **Robust Singleton Registry**: Trait-based singleton registry system managing module capabilities
 - **IPC Communication System**: Main thread waits for IPC commands and routes them to appropriate processing modules
 - **Command Processing**: Modules handle specific actions (restart applications, store files, send emails, etc.)
 - **Plugin Infrastructure**: Basic framework for third-party command processors (implementation in progress)
@@ -36,7 +36,7 @@ IPC Command → Main Thread → Module Processor → Action Execution
 **Current Implementation:**
 
 - Commands and processors are linked via `LazyLock<HashMap<String, Arc<dyn Command>>>`
-- Modules access main application API through channels or DI registry singletons
+- Modules access main application API through channels or singleton registry singletons
 - Multithreading approach allows modules to consume main app APIs safely
 
 **Key Insights:**
@@ -50,7 +50,7 @@ IPC Command → Main Thread → Module Processor → Action Execution
 
 **Zero-Restart Module Replacement:**
 
-- DI registry identifies modules by traits, not concrete types
+- Singleton registry identifies modules by traits, not concrete types
 - Registry allows replacing/overriding singletons without restart
 - Any subsequent consumption automatically uses new module implementation
 - Example: Send IPC command to replace GUI visualization or logging singleton with newer version
@@ -62,7 +62,7 @@ This fulfills the personal requirement to define applications as collections of 
 
 **RuntimeSwap Module:**
 
-- Remote plugin retrieval and registration in DI registry
+- Remote plugin retrieval and registration in singleton registry
 - npm-style versioning and namespace management
 - Common trait collection for plugin interoperability
 - Configuration-driven runtime: load different application configurations without exiting main thread
@@ -119,7 +119,7 @@ Need to replace/extend → Install new module version → Automatic integration
 - **Hot-Swappable UI**: Add or replace functionality by installing new component modules
 - **Storybook Alignment**: Natural integration with existing component development tools
 
-**Note**: While traditional DI isn't common in pure frontend applications, the modular composition principles still apply effectively.
+**Note**: While traditional dependency injection frameworks aren't common in pure frontend applications, the modular composition and singleton registry principles still apply effectively.
 
 ---
 
