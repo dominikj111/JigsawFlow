@@ -6,9 +6,9 @@ This document presents real-world examples demonstrating how the JigsawFlow arch
 
 Traditional application development follows a predictable pattern across all languages: we build applications by adding dependencies (crates in Rust, packages in Node.js, libraries in Java/C#/Go/Python) and consuming them within our application logic. While architectural patterns like dependency injection (DI), OOP, composition, builder patterns, and facade patterns help organize code and improve quality, they don't address the fundamental challenge of **runtime composability** and **hot-swappable functionality**.
 
-JigsawFlow emerged from the need to define applications as collections of autonomous modules that work together with minimal integration code, inspired by industrial automation systems that have solved similar challenges for decades.
+JigsawFlow emerged from the need to define applications as collections of autonomous components that work together with minimal integration code, inspired by industrial automation systems that have solved similar challenges for decades.
 
-**Note on Terminology**: Throughout these examples, "module" and "plugin" are functionally identical—both represent self-contained units of functionality. The distinction is purely deployment-based: modules can be statically compiled into applications, while plugins are dynamically loaded at runtime. Both follow the same architectural principles and interfaces.
+**Note on Terminology**: Throughout these examples, "component" and "plugin" serve different but related purposes: components are the core architectural elements that register with the singleton registry and provide capabilities, while plugins are deployment packages that may contain one or more components along with additional resources. Both follow the same architectural principles and interfaces.
 
 ---
 
@@ -20,9 +20,9 @@ JigsawFlow emerged from the need to define applications as collections of autono
 
 **Core Architecture:**
 
-- **Robust Singleton Registry**: Trait-based singleton registry system managing module capabilities
-- **IPC Communication System**: Main thread waits for IPC commands and routes them to appropriate processing modules
-- **Command Processing**: Modules handle specific actions (restart applications, store files, send emails, etc.)
+- **Robust Singleton Registry**: Trait-based singleton registry system managing component capabilities
+- **IPC Communication System**: Main thread waits for IPC commands and routes them to appropriate processing components
+- **Command Processing**: Components handle specific actions (restart applications, store files, send emails, etc.)
 - **Plugin Infrastructure**: Basic framework for third-party command processors (implementation in progress)
 
 ### Technical Details
@@ -30,37 +30,37 @@ JigsawFlow emerged from the need to define applications as collections of autono
 **Command Flow:**
 
 ```text
-IPC Command → Main Thread → Module Processor → Action Execution
+IPC Command → Main Thread → Component Processor → Action Execution
 ```
 
 **Current Implementation:**
 
 - Commands and processors are linked via `LazyLock<HashMap<String, Arc<dyn Command>>>`
-- Modules access main application API through channels or singleton registry singletons
-- Multithreading approach allows modules to consume main app APIs safely
+- Components access main application API through channels or singleton registry singletons
+- Multithreading approach allows components to consume main app APIs safely
 
 **Key Insights:**
 
 - IPC communication can be modularized
-- Command processors can be extracted into separate modules or grouped logically
-- Channel communication enables safe multithreaded module interaction
-- Application gradually transforms into fully modularized system with internal and external modules
+- Command processors can be extracted into separate components or grouped logically
+- Channel communication enables safe multithreaded component interaction
+- Application gradually transforms into fully component-based system with internal and external components
 
 ### Hot-Swapping Capabilities
 
-**Zero-Restart Module Replacement:**
+**Zero-Restart Component Replacement:**
 
-- Singleton registry identifies modules by traits, not concrete types
+- Singleton registry identifies components by traits, not concrete types
 - Registry allows replacing/overriding singletons without restart
-- Any subsequent consumption automatically uses new module implementation
+- Any subsequent consumption automatically uses new component implementation
 - Example: Send IPC command to replace GUI visualization or logging singleton with newer version
 
 **Vision Realized:**
-This fulfills the personal requirement to define applications as collections of autonomous modules requiring minimal integration code—hence the "Jigsaw" metaphor.
+This fulfills the personal requirement to define applications as collections of autonomous components requiring minimal integration code—hence the "Jigsaw" metaphor.
 
-### Future Module Ideas
+### Future Component Ideas
 
-**RuntimeSwap Module:**
+**RuntimeSwap Component:**
 
 - Remote plugin retrieval and registration in singleton registry
 - npm-style versioning and namespace management
@@ -69,11 +69,11 @@ This fulfills the personal requirement to define applications as collections of 
 - Central registry server for community contributions (WordPress-style model)
 - Plugin categories: P2P communication, hardware interfaces (I2C, Bluetooth), HTTP servers, admin interfaces
 
-**MCP Module:**
+**MCP Component:**
 
 - Model Context Protocol integration for universal LLM application interaction
-- Cross-module communication through events
-- AI-driven module orchestration and decision making
+- Cross-component communication through events
+- AI-driven component orchestration and decision making
 
 ---
 
@@ -84,7 +84,7 @@ This fulfills the personal requirement to define applications as collections of 
 ### Component Architecture
 
 **Self-Contained Application Bits:**
-Each component functions as a complete module including:
+Each component functions as a complete element including:
 
 - View logic and rendering
 - Service layer and business logic
@@ -105,18 +105,18 @@ Communication choice is flexible—use global state, events, channels, or other 
 
 ### Development Workflow
 
-**Module-Based Development:**
+**Component-Based Development:**
 
 ```text
-Need new functionality → Add module → Use component tag → Functionality available
-Need to replace/extend → Install new module version → Automatic integration
+Need new functionality → Add component → Use component tag → Functionality available
+Need to replace/extend → Install new component version → Automatic integration
 ```
 
 **Benefits:**
 
 - **Replaceable Components**: Runtime component swapping without application rebuild
-- **Modular Development**: Independent component development and testing
-- **Hot-Swappable UI**: Add or replace functionality by installing new component modules
+- **Component-Based Development**: Independent component development and testing
+- **Hot-Swappable UI**: Add or replace functionality by installing new component elements
 - **Storybook Alignment**: Natural integration with existing component development tools
 
 **Note**: While traditional dependency injection frameworks aren't common in pure frontend applications, the modular composition and singleton registry principles still apply effectively.
@@ -138,19 +138,19 @@ Need to replace/extend → Install new module version → Automatic integration
 
 ### JigsawFlow Adaptation
 
-**Software PLC Units:**
+**Software PLC Components:**
 
-- Modules function as software equivalents of PLC units
-- Each module contains domain-specific logic and capabilities
+- Components function as software equivalents of PLC components
+- Each component contains domain-specific logic and capabilities
 - Trait-based interfaces replace physical signal connections
-- Runtime module replacement mirrors PLC unit replacement patterns
+- Runtime component replacement mirrors PLC component replacement patterns
 
 **Industrial Heritage Benefits:**
 
 - **Understood Pattern**: Widely adopted and comprehended by industrial engineers
 - **Risk-Proven Approach**: Validated through decades of critical system operation
 - **Scalable Architecture**: From single machines to entire factory automation systems
-- **Maintenance-Friendly**: Clear module boundaries enable targeted troubleshooting and replacement
+- **Maintenance-Friendly**: Clear component boundaries enable targeted troubleshooting and replacement
 
 ---
 
@@ -162,39 +162,39 @@ Need to replace/extend → Install new module version → Automatic integration
 
 **CommandBox Framework Approach:**
 
-- Web/server application parts defined as CommandBox modules
+- Web/server application parts defined as CommandBox components
 - Package manager-style installation: `box install usermanagement`, `box install invoicemanagement`
-- Each module included complete functionality: views, controllers, services, database adaptations
-- Initialization scripts automatically adapted database schema for full module functionality
+- Each component included complete functionality: views, controllers, services, database adaptations
+- Initialization scripts automatically adapted database schema for full component functionality
 
-### Module Architecture
+### Component Architecture
 
-**Feature-Complete Modules:**
+**Feature-Complete Components:**
 
-- **User Management Module**: Complete user authentication, authorization, and profile management
-- **Invoice Management Module**: Full invoicing system with templates, calculations, and reporting
-- **Environment Configuration Module**: Centralized system configuration and environment management
-- **System Messaging Module**: Unified communication infrastructure across all modules
+- **User Management Component**: Complete user authentication, authorization, and profile management
+- **Invoice Management Component**: Full invoicing system with templates, calculations, and reporting
+- **Environment Configuration Component**: Centralized system configuration and environment management
+- **System Messaging Component**: Unified communication infrastructure across all components
 
 ### Key Lessons Applied to JigsawFlow
 
 **Package Manager Approach:**
 
 - Simple installation commands provide complex functionality
-- Modules self-configure required infrastructure automatically
-- Centralized communication system enables module coordination
-- Feature-complete modules provide complete solutions, not just libraries
+- Components self-configure required infrastructure automatically
+- Centralized communication system enables component coordination
+- Feature-complete components provide complete solutions, not just libraries
 
 **Database Integration:**
 
-- Modules automatically adapt database schema during installation
-- Self-contained database migrations ensure module independence
+- Components automatically adapt database schema during installation
+- Self-contained database migrations ensure component independence
 - Centralized configuration management coordinates shared resources
 
 ### PHP/Composer Potential
 
 **Similar Opportunities:**
-PHP applications could benefit similarly using Composer for module installation and management, following the same principles of self-contained, feature-complete modules with automatic integration capabilities.
+PHP applications could benefit similarly using Composer for component installation and management, following the same principles of self-contained, feature-complete components with automatic integration capabilities.
 
 ---
 
@@ -204,12 +204,12 @@ PHP applications could benefit similarly using Composer for module installation 
 
 **Across all four examples, several consistent patterns emerge:**
 
-1. **Module Independence**: Each module operates autonomously with minimal external dependencies
-2. **Interface-Based Communication**: Standardized contracts enable module interoperability
+1. **Component Independence**: Each component operates autonomously with minimal external dependencies
+2. **Interface-Based Communication**: Standardized contracts enable component interoperability
 3. **Hot-Swappable Architecture**: Runtime replacement without system restart
 4. **Package Manager Integration**: Simple installation commands for complex functionality
-5. **Self-Configuring Modules**: Automatic setup and integration upon installation
-6. **Centralized Coordination**: Registry or communication system manages module interactions
+5. **Self-Configuring Components**: Automatic setup and integration upon installation
+6. **Centralized Coordination**: Registry or communication system manages component interactions
 
 ### Technology-Agnostic Benefits
 

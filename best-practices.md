@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD024 -->
+
 # JigsawFlow Best Practices
 
 Implementation patterns and techniques for building robust, efficient JigsawFlow applications.
@@ -8,11 +10,11 @@ Implementation patterns and techniques for building robust, efficient JigsawFlow
 
 ### Offline-First Design
 
-All JigsawFlow modules must be designed to function independently without external dependencies or network connectivity.
+All JigsawFlow components must be designed to function independently without external dependencies or network connectivity.
 
 **Mandatory Requirements:**
 
-- Modules must operate fully when disconnected from networks or external services
+- Components must operate fully when disconnected from networks or external services
 - Implement graceful degradation when external resources are unavailable
 - Cache essential data locally to maintain functionality during outages
 - Design for eventual consistency rather than real-time synchronization
@@ -26,23 +28,23 @@ All JigsawFlow modules must be designed to function independently without extern
 - Better performance through local data access
 - Increased system resilience and fault tolerance
 
-### Module Independence Principle
+### Component Independence Principle
 
-Modules must never directly depend on other modules. Any shared functionality must be unified into a single module.
+Components must never directly depend on other components. Any shared functionality must be unified into a single component.
 
 **Strict Requirements:**
 
-- **No Inter-Module Dependencies**: Modules cannot directly reference or import other modules
-  **Shared Functionality Guidance**: If modules need shared functionality, prefer extracting it into a separate shared module or refactor boundaries. Avoid tight coupling; prefer interfaces and graceful degradation
+- **No Inter-Component Dependencies**: Components cannot directly reference or import other components
+  **Shared Functionality Guidance**: If components need shared functionality, prefer extracting it into a separate shared component or refactor boundaries. Avoid tight coupling; prefer interfaces and graceful degradation
   **Communication Flexibility**: Use the DI registry, event-driven messaging, channels, IPC, or other appropriate mechanisms—no single method is prescribed
-- **Interface-Based Coupling**: Modules depend only on traits/interfaces, never concrete implementations
+- **Interface-Based Coupling**: Components depend only on traits/interfaces, never concrete implementations
 
 **Enforcement Guidelines:**
 
-- Analyze module boundaries during design to prevent dependency coupling
-- Refactor shared code into common modules rather than creating dependencies
-- Use composition over inheritance to avoid module coupling
-- Design modules as completely self-contained units
+- Analyze component boundaries during design to prevent dependency coupling
+- Refactor shared code into common components rather than creating dependencies
+- Use composition over inheritance to avoid component coupling
+- Design components as completely self-contained elements
 
 ### Facade Pattern for External Dependencies
 
@@ -82,7 +84,7 @@ Future: a thin abstraction will standardize lazy initialization and caching patt
 
 #### Lightweight Initialization Pattern
 
-Create module structures that defer expensive operations until first access.
+Create component structures that defer expensive operations until first access.
 
 Pre-calculation can be triggered via a deliberate first access to warm caches.
 
@@ -90,28 +92,28 @@ Pre-calculation can be triggered via a deliberate first access to warm caches.
 
 - `::new()` or equivalent constructor creates minimal structure
 - Expensive resources (configuration files, database connections, remote data) load on demand
-- Results cached at module level for subsequent access
-- Particularly effective for configuration modules requiring remote downloads
+- Results cached at component level for subsequent access
+- Particularly effective for configuration components requiring remote downloads
 
 **Benefits:**
 
 - Faster application startup times
 - Reduced memory footprint during initialization
 - Improved fault tolerance (failures occur at access time, not startup)
-- Better resource utilization in multi-module applications
+- Better resource utilization in multi-component applications
 
 **Use Cases:**
 
-- Configuration modules downloading from remote sources
+- Configuration components downloading from remote sources
 - Database connection pools
 - External API clients
 - Large data structure initialization
 
 #### Caching Strategies
 
-**Module-Level Caching:**
+**Component-Level Caching:**
 
-- Cache expensive computations within module boundaries
+- Cache expensive computations within component boundaries
 - Implement cache invalidation for dynamic data
 - Consider memory constraints in long-running applications
 
@@ -153,46 +155,46 @@ Register builder functions as first-class citizens in the singleton registry:
 **Maintainability:**
 
 - Separate construction logic from object implementation
-- Enable construction pattern reuse across modules
+- Enable construction pattern reuse across components
 - Support construction pattern evolution without breaking existing code
 
 ---
 
-## Module Design Patterns
+## Component Design Patterns
 
-### Single Responsibility Modules
+### Single Responsibility Components
 
-Design modules with focused, well-defined purposes following the PLC unit paradigm:
+Design components with focused, well-defined purposes following the PLC component paradigm:
 
 **Guidelines:**
 
-- Each module should solve one specific domain problem
-- Avoid feature creep within module boundaries
-- Prefer module composition over monolithic module design
+- Each component should solve one specific domain problem
+- Avoid feature creep within component boundaries
+- Prefer component composition over monolithic component design
 - Design for replaceability and hot-swapping
 
 ### Interface-First Development
 
-Define module contracts before implementation:
+Define component contracts before implementation:
 
 **Process:**
 
-1. Define trait/interface specifications for module capabilities
+1. Define trait/interface specifications for component capabilities
 2. Establish input/output contracts and data formats
-3. Explore generic trait/interface collections—modules may interoperate in ways not originally anticipated
-4. Implement module logic to satisfy interface contracts
-5. Register module capabilities through singleton registry
+3. Explore generic trait/interface collections—components may interoperate in ways not originally anticipated
+4. Implement component logic to satisfy interface contracts
+5. Register component capabilities through singleton registry
 
 **Benefits:**
 
-- Clear module boundaries and responsibilities
+- Clear component boundaries and responsibilities
 - Enhanced testability through interface mocking
-- Simplified module replacement and versioning
+- Simplified component replacement and versioning
 - Better cross-language compatibility
 
 ### Dependency Declaration
 
-Explicitly declare module dependencies through the singleton registry:
+Explicitly declare component dependencies through the singleton registry:
 
 **Patterns:**
 
@@ -205,17 +207,17 @@ Explicitly declare module dependencies through the singleton registry:
 
 ## Performance Optimization
 
-### Module Loading Strategies
+### Component Loading Strategies
 
 **Static Loading (Phase 1):**
 
-- Load all required modules during application initialization
+- Load all required components during application initialization
 - Optimize for predictable startup performance
-- Suitable for applications with known module requirements
+- Suitable for applications with known component requirements
 
 **Dynamic Loading (Phase 2 - RuntimeSwap):**
 
-- Load modules on-demand based on runtime requirements
+- Load components on-demand based on runtime requirements
 - Optimize for memory usage and startup time
 - Handle loading failures and fallback scenarios
 
@@ -223,7 +225,7 @@ Explicitly declare module dependencies through the singleton registry:
 
 **Intra-Application Communication:**
 
-- Prefer direct singleton registry access for same-process modules
+- Prefer direct singleton registry access for same-process components
 - Minimize serialization overhead for local communication
 - Use efficient data structures for high-frequency interactions
 
@@ -237,15 +239,15 @@ Explicitly declare module dependencies through the singleton registry:
 
 These are generic recommendations for software development, not tied to the JigsawFlow pattern
 
-**Module Lifecycle:**
+**Component Lifecycle:**
 
-- Implement proper cleanup in module shutdown procedures
-- Release expensive resources when modules are replaced
+- Implement proper cleanup in component shutdown procedures
+- Release expensive resources when components are replaced
 - Monitor memory usage in long-running applications
 
 **Resource Sharing:**
 
-- Use singleton registry for sharing expensive resources across modules
+- Use singleton registry for sharing expensive resources across components
 - Consider resource pooling for frequently created/destroyed objects
 
 ---
@@ -254,7 +256,7 @@ These are generic recommendations for software development, not tied to the Jigs
 
 ### Graceful Degradation
 
-Design modules to handle dependency failures gracefully:
+Design components to handle dependency failures gracefully:
 
 **Strategies:**
 
@@ -264,43 +266,43 @@ Design modules to handle dependency failures gracefully:
 
 ### Module Isolation
 
-Prevent module failures from cascading across the application:
+Prevent component failures from cascading across the application:
 
 **Techniques:**
 
-- Implement error boundaries around module operations
-- Isolate module state to prevent cross-contamination
+- Implement error boundaries around component operations
+- Isolate component state to prevent cross-contamination
 
 - Use circuit breaker patterns (if appropriate) to detect and prevent cascading failures when external dependencies become unavailable; this allows the system to recover more quickly from outages and reduces the load on the failed dependency during the outage
 
 ### Hot-Swap Safety
 
-Ensure safe module replacement during runtime:
+Ensure safe component replacement during runtime:
 
 **Guidelines:**
 
-- Implement proper cleanup procedures before module replacement
-- Handle in-flight operations during module swapping
-- Validate new module compatibility before activation
-- Provide rollback mechanisms for failed module updates
+- Implement proper cleanup procedures before component replacement
+- Handle in-flight operations during component swapping
+- Validate new component compatibility before activation
+- Provide rollback mechanisms for failed component updates
 
 ---
 
 ## Testing Strategies
 
-### Module Unit Testing
+### Component Testing
 
 **Isolation Testing:**
 
-- Test modules in isolation using mocked dependencies
+- Test components in isolation using mocked dependencies
 - Verify interface contract compliance
 - Test error handling and edge cases
 
 **Integration Testing:**
 
-- Test module interactions through singleton registry
+- Test component interactions through singleton registry
 - Verify communication patterns and data flow
-- Test module replacement and hot-swapping scenarios
+- Test component replacement and hot-swapping scenarios
 
 ### Builder Pattern Testing
 
@@ -320,13 +322,13 @@ Ensure safe module replacement during runtime:
 
 ## Security Considerations
 
-### Module Sandboxing
+### Component Sandboxing
 
 **Trust Boundaries:**
 
-- Establish clear trust levels for different module sources
-- Implement sandboxing for untrusted modules (future enhancement)
-- Validate module signatures and integrity
+- Establish clear trust levels for different component sources
+- Implement sandboxing for untrusted components (future enhancement)
+- Validate component signatures and integrity
 
 ### Communication Security
 
@@ -340,7 +342,7 @@ Ensure safe module replacement during runtime:
 
 **Capability-Based Security:**
 
-- Limit module access to required resources only
+- Limit component access to required resources only
 - Implement fine-grained permission systems
 - Monitor and log resource access patterns
 
@@ -348,32 +350,32 @@ Ensure safe module replacement during runtime:
 
 ## Monitoring & Debugging
 
-### Module Observability
+### Component Observability
 
 **Logging Strategies:**
 
-- Implement structured logging within modules
-- Include module identity and version information in logs
-- Use correlation IDs for cross-module operation tracking
+- Implement structured logging within components
+- Include component identity and version information in logs
+- Use correlation IDs for cross-component operation tracking
 
 **Metrics Collection:**
 
-- Monitor module performance and resource usage
-- Track module loading and replacement events
+- Monitor component performance and resource usage
+- Track component loading and replacement events
 - Measure communication latency and throughput
 
 ### Debugging Techniques
 
-**Module Inspection:**
+**Component Inspection:**
 
-- Implement module state inspection capabilities
-- Provide debugging interfaces for module introspection
-- Support runtime module configuration changes
+- Implement component state inspection capabilities
+- Provide debugging interfaces for component introspection
+- Support runtime component configuration changes
 
 **Communication Debugging:**
 
-- Log inter-module communication for troubleshooting
-- Implement message tracing across module boundaries
+- Log inter-component communication for troubleshooting
+- Implement message tracing across component boundaries
 - Provide tools for communication pattern visualization
 
 ---
@@ -385,12 +387,12 @@ Ensure safe module replacement during runtime:
 **Incremental Adoption:**
 
 - Start with non-critical system components
-- Implement JigsawFlow modules alongside existing systems
-- Gradually replace legacy components with modular alternatives
+- Implement JigsawFlow components alongside existing systems
+- Gradually replace legacy components with component-based alternatives
 
-**Wrapper Modules:**
+**Wrapper Components:**
 
-- Create JigsawFlow modules that wrap existing functionality
+- Create JigsawFlow components that wrap existing functionality
 - Provide interface adaptation for legacy systems
 - Enable gradual migration without system disruption
 
@@ -398,15 +400,15 @@ Ensure safe module replacement during runtime:
 
 **Boundary Identification:**
 
-- Analyze existing system to identify natural module boundaries
-- Prioritize modules with clear interfaces and minimal dependencies
+- Analyze existing system to identify natural component boundaries
+- Prioritize components with clear interfaces and minimal dependencies
 - Plan decomposition phases to minimize system disruption
 
 **Data Migration:**
 
 - Handle shared data access during decomposition
-- Implement data consistency strategies across modules
-- Plan for eventual data ownership transfer to appropriate modules
+- Implement data consistency strategies across components
+- Plan for eventual data ownership transfer to appropriate components
 
 ---
 

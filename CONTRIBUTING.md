@@ -2,7 +2,7 @@
 
 # Contributing to JigsawFlow
 
-Thank you for your interest in contributing to JigsawFlow! We welcome contributions from developers, architects, and industrial automation experts. Whether you're building modules, improving documentation, or sharing use cases, your input helps shape the future of modular application architecture.
+Thank you for your interest in contributing to JigsawFlow! We welcome contributions from developers, architects, and industrial automation experts. Whether you're building components, improving documentation, or sharing use cases, your input helps shape the future of modular application architecture.
 
 ## Table of Contents
 
@@ -31,15 +31,15 @@ Thank you for your interest in contributing to JigsawFlow! We welcome contributi
 
 ### **For Enterprises**
 
-1. **Assess Current Architecture**: Identify monolithic components suitable for modularization
-2. **Plan Migration Strategy**: Design interface boundaries and module responsibilities
+1. **Assess Current Architecture**: Identify monolithic components suitable for componentization
+2. **Plan Migration Strategy**: Design interface boundaries and component responsibilities
 3. **Pilot Implementation**: Start with non-critical system components
 4. **Share Success Stories**: Document your JigsawFlow adoption journey
 
 ### **For Contributors**
 
 1. **Join Community**: Participate in architecture discussions and RFC process
-2. **Develop Modules**: Create reusable modules for common enterprise needs
+2. **Develop Components**: Create reusable components for common enterprise needs
 3. **Improve Tooling**: Enhance developer experience and debugging capabilities
 4. **Share Knowledge**: Write tutorials, case studies, and best practices
 
@@ -53,7 +53,7 @@ Thank you for your interest in contributing to JigsawFlow! We welcome contributi
 
 - Define standardized trait/interface definitions for common capabilities
 - Create language-agnostic specifications that translate to idiomatic implementations
-- Establish module certification and compatibility frameworks
+- Establish component certification and compatibility frameworks
 
 **Reference Implementations**
 
@@ -61,20 +61,20 @@ Thank you for your interest in contributing to JigsawFlow! We welcome contributi
 - Create singleton registry implementations
 - Build core architectural components following JigsawFlow principles
 
-### 🔧 **Module Development**
+### 🔧 **Component Development**
 
-**Community Modules**
+**Community Components**
 
-- Build reusable modules for common enterprise needs
+- Build reusable components for common enterprise needs
 - Focus on offline-first, hot-swappable design
 - Follow interface compliance requirements
 - Implement graceful degradation patterns
 
 **Domain-Specific Solutions**
 
-- Industrial automation modules (PLC-style components)
-- Enterprise application modules (authentication, logging, monitoring)
-- Communication protocol modules (Bluetooth, P2P, TCP/IP, UDP, Modbus)
+- Industrial automation components (PLC-style components)
+- Enterprise application components (authentication, logging, monitoring)
+- Communication protocol components (Bluetooth, P2P, TCP/IP, UDP, Modbus)
 
 ### 📚 **Documentation & Education**
 
@@ -96,14 +96,14 @@ Thank you for your interest in contributing to JigsawFlow! We welcome contributi
 
 **Development Tools**
 
-- CLI tools for module management and scaffolding
+- CLI tools for component management and scaffolding
 - IDE extensions and plugins
 - Debugging and profiling tools
-- Module testing frameworks
+- Component testing frameworks
 
 **Community Infrastructure**
 
-- Module registry and discovery systems
+- Component registry and discovery systems
 - Quality assurance processes
 - Cross-language interoperability testing
 - Performance benchmarking tools
@@ -116,8 +116,8 @@ Thank you for your interest in contributing to JigsawFlow! We welcome contributi
 
 All contributions must adhere to the three fundamental constraints:
 
-1. **Offline-First Design**: Modules must function when network connectivity is lost but may utilize network protocols when available
-2. **Module Independence**: Modules must not directly depend on other modules; extract shared functionality into separate modules
+1. **Offline-First Design**: Components must function when network connectivity is lost but may utilize network protocols when available
+2. **Component Independence**: Components must not directly depend on other components; extract shared functionality into separate components
 3. **Facade Pattern**: All external dependencies must be wrapped through DI-registered facades
 
 ### **Code Quality Standards**
@@ -126,7 +126,7 @@ All contributions must adhere to the three fundamental constraints:
 
 - Define clear trait/interface contracts before implementation
 - Follow dependency inversion principles
-- Ensure single responsibility per module
+- Ensure single responsibility per component
 - Design for testability and mocking
 
 **Industrial-Grade Reliability**
@@ -134,7 +134,7 @@ All contributions must adhere to the three fundamental constraints:
 - Implement graceful degradation when dependencies are unavailable
 - Add comprehensive error handling and logging
 - Follow battle-tested patterns from PLC/SCADA systems
-- Ensure hot-swappable module replacement
+- Ensure hot-swappable component replacement
 
 **Cross-Language Compatibility**
 
@@ -145,10 +145,10 @@ All contributions must adhere to the three fundamental constraints:
 
 ### **Testing Requirements**
 
-- **Unit Tests**: Test individual module functionality in isolation
-- **Integration Tests**: Verify module composition and DI registry behavior
+- **Unit Tests**: Test individual component functionality in isolation
+- **Integration Tests**: Verify component composition and DI registry behavior
 - **Offline Tests**: Validate offline-first behavior and graceful degradation
-- **Hot-Swap Tests**: Ensure modules can be replaced without application restart
+- **Hot-Swap Tests**: Ensure components can be replaced without application restart
 
 ### **Documentation Standards**
 
@@ -219,25 +219,25 @@ We value all contributions to the JigsawFlow community:
 - **Code Contributors**: Acknowledged in project documentation
 - **Documentation Authors**: Credited in relevant materials
 - **Community Leaders**: Recognized for ongoing support and guidance
-- **Module Developers**: Featured in community showcases
+- **Component Developers**: Featured in community showcases
 
 ---
 
 ## Future Community Infrastructure
 
-### **Module Governance & Security**
+### **Component Governance & Security**
 
-- **Official Module Certification**: Community-vetted modules marked as "JigsawFlow Official"
+- **Official Component Certification**: Community-vetted components marked as "JigsawFlow Official"
 - **Community Voting System**: Democratic selection of idiomatic solutions for common problems
 - **Security Inspection Process**: Peer review and automated security scanning
-- **Trust Levels**: Graduated trust system from community contributions to enterprise-certified modules
+- **Trust Levels**: Graduated trust system from community contributions to enterprise-certified components
 
 ### **Ecosystem Development**
 
-- **Central Module Registry**: Discovery and distribution capabilities
+- **Central Component Registry**: Discovery and distribution capabilities
 - **Quality Assurance**: Automated testing and compatibility verification
 - **Cross-Language Bridging**: Interoperability testing and standards
-- **Developer Tooling**: Enhanced module creation, testing, and debugging tools
+- **Developer Tooling**: Enhanced component creation, testing, and debugging tools
 
 ---
 

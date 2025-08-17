@@ -20,11 +20,11 @@
 
 ## Overview
 
-JigsawFlow is a revolutionary architecture pattern that transforms how enterprise applications are built and composed. Inspired by battle-tested industrial automation systems like PLCs and SCADA architectures, JigsawFlow enables developers to construct robust applications through **compound modular composition** with minimal integration overhead.
+JigsawFlow is a revolutionary architecture pattern that transforms how enterprise applications are built and composed. Inspired by battle-tested industrial automation systems like PLCs and SCADA architectures, JigsawFlow enables developers to construct robust applications through **compound component composition** with minimal integration overhead.
 
-**Core Philosophy**: Following the proven PLC paradigm, JigsawFlow applications emerge through the strategic composition of specialized modules, each focused on solving a specific domain problem. Just as PLC units contribute distinct capabilities to form comprehensive industrial control systems, JigsawFlow modules bring focused expertise—user management, data persistence, communication protocols—that collectively shape the overall application architecture.
+**Core Philosophy**: Following the proven PLC paradigm, JigsawFlow applications emerge through the strategic composition of specialized components, each focused on solving a specific domain problem. Just as PLC components contribute distinct capabilities to form comprehensive industrial control systems, JigsawFlow components bring focused expertise—user management, data persistence, communication protocols—that collectively shape the overall application architecture.
 
-Unlike traditional software architecture approaches that require extensive glue code and tight coupling, JigsawFlow applications emerge organically from reusable, interface-compliant modules managed through a centralized singleton registry.
+Unlike traditional software architecture approaches that require extensive glue code and tight coupling, JigsawFlow applications emerge organically from reusable, interface-compliant components managed through a centralized singleton registry.
 
 ---
 
@@ -46,7 +46,7 @@ let db = container.resolve::<DatabaseService>();
 
 ```rust
 // Type-focused, hot-swappable singletons
-registry.register::<Storage>(postgres_module);
+registry.register::<Storage>(postgres_component);
 let storage = registry.get::<Storage>();
 ```
 
@@ -64,7 +64,7 @@ JigsawFlow uses a **singleton registry pattern**, not traditional dependency inj
 **JigsawFlow Singleton Registry:**
 
 - Global singleton store accessed by trait/interface/type
-- Runtime module discovery and hot-swapping
+- Runtime component discovery and hot-swapping
 - Service locator pattern with type safety
 - Write-once, read-many access pattern optimized for performance
 - Thread-safe singleton replacement without application restart
@@ -76,26 +76,26 @@ JigsawFlow uses a **singleton registry pattern**, not traditional dependency inj
 - **TypeScript**: Type-based registry
 - **Go**: Interface-based registry
 
-This approach enables the core JigsawFlow benefits: hot-swappable modules, runtime composition, and zero-restart module replacement. The registry functions as a global service locator where modules register their implementations and discover the services they need.
+This approach enables the core JigsawFlow benefits: hot-swappable components, runtime composition, and zero-restart component replacement. The registry functions as a global service locator where components register their implementations and discover the services they need.
 
 ### **Unix Microkernel Principles at Application Level**
 
 JigsawFlow applies proven Unix design principles to application architecture:
 
-| **Unix Principle**                 | **JigsawFlow Application**                    |
-| ---------------------------------- | --------------------------------------------- |
-| "Everything is a file"             | "Everything is a capability"                  |
-| Small tools that do one thing well | Small modules with focused responsibilities   |
-| Compose via pipes                  | Compose via singleton registry                |
-| Process independence               | Module independence with graceful degradation |
-| Hot-swappable kernel modules       | Hot-swappable application modules             |
+| **Unix Principle**                 | **JigsawFlow Application**                       |
+| ---------------------------------- | ------------------------------------------------ |
+| "Everything is a file"             | "Everything is a capability"                     |
+| Small tools that do one thing well | Small components with focused responsibilities   |
+| Compose via pipes                  | Compose via singleton registry                   |
+| Process independence               | Component independence with graceful degradation |
+| Hot-swappable kernel modules       | Hot-swappable application components             |
 
 ### **Emergent System Composition**
 
 The real innovation isn't just modularization—it's **emergent composition**:
 
-- **Traditional Architecture**: Explicitly designed, modules know about each other
-- **JigsawFlow Architecture**: Applications emerge from available capabilities, modules declare needs rather than dependencies
+- **Traditional Architecture**: Explicitly designed, components know about each other
+- **JigsawFlow Architecture**: Applications emerge from available capabilities, components declare needs rather than dependencies
 
 This creates a **userspace microkernel** where complex applications arise from simple, composable primitives—just like Unix achieved emergent complexity from basic process and file abstractions.
 
@@ -114,11 +114,11 @@ JigsawFlow draws inspiration from proven industrial automation patterns:
 
 ### **Enterprise Benefits**
 
-- **Rapid Application Assembly**: Build complex systems by composing pre-built modules
+- **Rapid Application Assembly**: Build complex systems by composing pre-built components
 - **Zero-Restart Hot-Swapping**: Replace functionality without application downtime (Phase 1 supports DI singleton replacement; Phase 2 adds dynamic library loading via RuntimeSwap)
-- **Polyglot System Architecture**: Build cross-language applications through communication modules (Bluetooth, P2P, TCP/IP, UDP, Modbus) that enable JigsawFlow implementations across Java, C#, JavaScript/TypeScript, Rust, and other languages to interoperate seamlessly
-- **Minimal Integration Overhead**: Singleton registry handles module coordination
-- **Community-Driven Ecosystem**: Shared module repository for common functionality
+- **Polyglot System Architecture**: Build cross-language applications through communication components (Bluetooth, P2P, TCP/IP, UDP, Modbus) that enable JigsawFlow implementations across Java, C#, JavaScript/TypeScript, Rust, and other languages to interoperate seamlessly
+- **Minimal Integration Overhead**: Singleton registry handles component coordination
+- **Community-Driven Ecosystem**: Shared component repository for common functionality
 
 ---
 
@@ -128,33 +128,55 @@ JigsawFlow draws inspiration from proven industrial automation patterns:
 
 The heart of JigsawFlow is a trait/interface-based singleton registry - a global singleton store that returns instances by trait/interface/type - that:
 
-- Registers modules by their service interfaces, not concrete types
+- Registers components by their service interfaces, not concrete types
 - Enables singleton replacement without application restart
 - Provides language-agnostic service discovery
-- Functions as a thread-safe service locator for modular services
+- Functions as a thread-safe service locator for component services
 - Supports trait registry (Rust), interface registry (Java/C#), and type registry (TypeScript) patterns
 
-### **Module Interface Compliance**
+### **Component vs Plugin Distinction**
 
-Every JigsawFlow module implements standardized interfaces for:
+JigsawFlow uses precise terminology to distinguish between architectural and deployment concepts:
 
-- **Interface Definition**: What services the module provides/consumes
-- **Module Lifecycle**: Module registration, initialization and cleanup
+**JigsawFlow Component:**
+
+- Core architectural element that registers with the singleton registry
+- Provides specific capabilities through well-defined interfaces
+- Behaves like a PLC component with focused responsibilities
+- Can be hot-swapped at runtime without application restart
+- Examples: Storage Component, Authentication Component, Logging Component
+
+**Plugin:**
+
+- Deployment package that extends application functionality
+- May contain one or more components along with additional resources
+- Physical distribution mechanism (files, libraries, packages)
+- Brings complete solutions including configs, assets, documentation
+- Examples: User Management Plugin (containing Auth Component + Profile Component + UI assets)
+
+**Relationship:** Plugins are containers that deliver components to applications. A plugin typically packages related components together with their supporting resources for easy installation and distribution.
+
+### **Component Interface Compliance**
+
+Every JigsawFlow component implements standardized interfaces for:
+
+- **Interface Definition**: What services the component provides/consumes
+- **Component Lifecycle**: Component registration, initialization and cleanup
 
 ### **Compound Application Assembly**
 
 Applications are built through **additive composition**:
 
-1. Start with minimal core (singleton registry + main thread module)
-2. Add functionality by installing interface-compliant modules
-3. Modules self-register their capabilities upon loading (modules can focus on or contain multiple solutions)
+1. Start with minimal core (singleton registry + main thread component)
+2. Add functionality by installing interface-compliant components
+3. Components self-register their capabilities upon loading (components can focus on or contain multiple solutions)
 
 ### **The Requirements**
 
-JigsawFlow modules must adhere to three fundamental architectural constraints:
+JigsawFlow components must adhere to three fundamental architectural constraints:
 
-- **Offline-First Design**: Modules must function when network connectivity is lost (WiFi down, cables cut) but may utilize network protocols when available
-- **Module Independence**: Modules must not directly depend on other modules. For shared functionality, prefer extracting it into a separate shared module; when dependencies are unavailable, modules should log and degrade gracefully
+- **Offline-First Design**: Components must function when network connectivity is lost (WiFi down, cables cut) but may utilize network protocols when available
+- **Component Independence**: Components must not directly depend on other components. For shared functionality, prefer extracting it into a separate shared component; when dependencies are unavailable, components should log and degrade gracefully
 - **Facade Pattern**: All external dependencies (file I/O, environment access, system calls) must be wrapped through singleton registry facades
 
 _See [best-practices.md](best-practices.md) for detailed implementation guidance and testing strategies._
@@ -167,46 +189,46 @@ _See [best-practices.md](best-practices.md) for detailed implementation guidance
 
 Transform monolithic applications into composable, maintainable systems:
 
-- **API Gateways**: HTTP + Authentication + Logging + Monitoring modules
-- **Data Processing Pipelines**: Input + Transform + Output + Persistence modules
-- **IoT Platforms**: Device Communication + Data Collection + Analytics modules
+- **API Gateways**: HTTP + Authentication + Logging + Monitoring components
+- **Data Processing Pipelines**: Input + Transform + Output + Persistence components
+- **IoT Platforms**: Device Communication + Data Collection + Analytics components
 
 ### **Industrial Automation**
 
 Leverage familiar PLC-style programming for software systems:
 
-- **Process Control**: Sensor Input + Logic Processing + Actuator Output modules
-- **SCADA Integration**: Data Acquisition + Supervisory Control + HMI modules
-- **Manufacturing Execution**: Workflow + Quality Control + Reporting modules
+- **Process Control**: Sensor Input + Logic Processing + Actuator Output components
+- **SCADA Integration**: Data Acquisition + Supervisory Control + HMI components
+- **Manufacturing Execution**: Workflow + Quality Control + Reporting components
 
 ### **Desktop & GUI Applications**
 
 Transform traditional desktop development through distributed GUI architecture:
 
-- **Cross-Platform Applications**: GUI Rendering + Business Logic + Data Persistence modules
-- **Development Tools**: Code Editor + Compiler + Debugger + GUI Dashboard modules
-- **System Administration**: Monitoring + Configuration + GUI Interface modules
+- **Cross-Platform Applications**: GUI Rendering + Business Logic + Data Persistence components
+- **Development Tools**: Code Editor + Compiler + Debugger + GUI Dashboard components
+- **System Administration**: Monitoring + Configuration + GUI Interface components
 - **Network-Distributed Apps**: Remote business logic + Local GUI rendering via P2P connections
 
 ### **Microservice Orchestration**
 
 Simplify complex distributed system management:
 
-- **Service Mesh**: Discovery + Load Balancing + Circuit Breaking modules
-- **Event Processing**: Message Routing + Stream Processing + State Management modules
-- **DevOps Automation**: CI/CD + Monitoring + Alerting + Deployment modules
+- **Service Mesh**: Discovery + Load Balancing + Circuit Breaking components
+- **Event Processing**: Message Routing + Stream Processing + State Management components
+- **DevOps Automation**: CI/CD + Monitoring + Alerting + Deployment components
 
 ---
 
 ## Positioning vs. known patterns
 
-| Pattern                          | What it is                          | Where JigsawFlow differs                                                                 |
-| -------------------------------- | ----------------------------------- | ---------------------------------------------------------------------------------------- |
-| Microkernel / Plug‑in            | Minimal core with plug‑ins          | You formalize plug‑in capabilities and offline‑first guarantees                          |
-| Hexagonal (Ports & Adapters)     | Domain wrapped by ports             | Ports/adapters map to service interfaces; singleton registry discovers/binds             |
-| Service‑oriented / Microservices | Network‑separated services          | JigsawFlow can be in‑proc or cross‑proc; modules are composable without service overhead |
-| Actor model                      | Isolated entities exchange messages | Your modules can adopt actors internally; the bus covers inter‑module traffic            |
-| OSGi/Module systems              | Runtime module lifecycles           | You keep it language‑agnostic and simpler (no classloader tricks)                        |
+| Pattern                          | What it is                          | Where JigsawFlow differs                                                                    |
+| -------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------- |
+| Microkernel / Plug‑in            | Minimal core with plug‑ins          | You formalize plug‑in capabilities and offline‑first guarantees                             |
+| Hexagonal (Ports & Adapters)     | Domain wrapped by ports             | Ports/adapters map to service interfaces; singleton registry discovers/binds                |
+| Service‑oriented / Microservices | Network‑separated services          | JigsawFlow can be in‑proc or cross‑proc; components are composable without service overhead |
+| Actor model                      | Isolated entities exchange messages | Your components can adopt actors internally; the bus covers inter‑component traffic         |
+| OSGi/Module systems              | Runtime module lifecycles           | You keep it language‑agnostic and simpler (no classloader tricks)                           |
 
 ---
 
@@ -219,15 +241,15 @@ Establish a comprehensive collection of standardized traits/interfaces for commo
 **1. Singleton Registry Standards**
 
 - Define problem-solution contracts through standardized trait/interface definitions
-- Enable community-driven module development where modules provide solutions to well-defined problems
+- Enable community-driven component development where components provide solutions to well-defined problems
 - Create language-agnostic specifications that translate to idiomatic implementations in each target language
-- Establish module certification and compatibility frameworks
+- Establish component certification and compatibility frameworks
 
 **2. Communication Protocol Definitions**
 
 - Standardize event-driven communication patterns across protocol boundaries
-- Define message shapes and interface contracts for inter-module communication
-- Enable modules to send events implementing specific traits/interfaces while other modules listen for compatible event types
+- Define message shapes and interface contracts for inter-component communication
+- Enable components to send events implementing specific traits/interfaces while other components listen for compatible event types
 - Support both intra-application and cross-application communication patterns
 
 This approach mirrors industrial automation standards, where discussed contracts enable polyglot systems through well-defined, battle-tested interface specifications.
@@ -236,13 +258,13 @@ This approach mirrors industrial automation standards, where discussed contracts
 
 **Distributed GUI Rendering Capabilities**
 
-JigsawFlow enables revolutionary GUI architecture where applications become pure business logic while GUI rendering becomes a dedicated capability module:
+JigsawFlow enables revolutionary GUI architecture where applications become pure business logic while GUI rendering becomes a dedicated capability component:
 
 - **Contract-Based GUI Rendering**: Applications send declarative UI specifications via singleton registry events, eliminating the need for GUI libraries in business logic
 - **Language-Agnostic GUI Services**: Backend services in Rust, Python, Go, etc. leverage unified GUI infrastructure without language-specific bindings
-- **Hot-Swappable UI Components**: GUI modules update independently from application logic, enabling live UI theming and layout changes
-- **Network-Distributed Applications**: P2P secure connections enable GUI modules to run on different machines—applications become truly distributed without installation requirements
-- **WorkFlows OS Integration**: GUI service modules serve as core system services, providing unified desktop experiences across all applications
+- **Hot-Swappable UI Components**: GUI components update independently from application logic, enabling live UI theming and layout changes
+- **Network-Distributed Applications**: P2P secure connections enable GUI components to run on different machines—applications become truly distributed without installation requirements
+- **WorkFlows OS Integration**: GUI service components serve as core system services, providing unified desktop experiences across all applications
 
 **Revolutionary Distribution Model**
 
@@ -257,31 +279,31 @@ This transforms software distribution from "install and run" to "connect and com
 
 ### **Dynamic Loading Capabilities**
 
-**RuntimeSwap Module Development**
+**RuntimeSwap Component Development**
 
 - Hot-loading of dynamic libraries without application restart
-- Advanced module versioning and compatibility management
-- Runtime module replacement with dependency resolution
-- Enhanced security models and sandboxing options for untrusted modules
+- Advanced component versioning and compatibility management
+- Runtime component replacement with dependency resolution
+- Enhanced security models and sandboxing options for untrusted components
 - Performance optimization for dynamic loading scenarios
 
 ### **Ecosystem Expansion**
 
 **Community Infrastructure**
 
-- Central module registry with discovery and distribution capabilities
+- Central component registry with discovery and distribution capabilities
 - Community contribution frameworks with quality assurance processes
-- Cross-language module bridging and interoperability testing
-- Advanced orchestration and monitoring tools for complex modular systems
-- Developer tooling for module creation, testing, and debugging
+- Cross-language component bridging and interoperability testing
+- Advanced orchestration and monitoring tools for complex component-based systems
+- Developer tooling for component creation, testing, and debugging
 
-**Module Governance & Security**
+**Component Governance & Security**
 
-- **Official Module Certification**: Community-vetted modules marked as "JigsawFlow Official" (similar to Docker Official Images)
+- **Official Component Certification**: Community-vetted components marked as "JigsawFlow Official" (similar to Docker Official Images)
 - **Community Voting System**: Democratic selection of idiomatic solutions for common problems
-- **Security Inspection Process**: Peer review and automated security scanning for module validation
+- **Security Inspection Process**: Peer review and automated security scanning for component validation
 - **Standard Solution Registry**: Community-defined canonical approaches (similar to WooCommerce in WordPress ecosystem)
-- **Trust Levels**: Graduated trust system from community contributions to enterprise-certified modules
+- **Trust Levels**: Graduated trust system from community contributions to enterprise-certified components
 
 ---
 
@@ -324,22 +346,22 @@ This repository contains comprehensive documentation to help you understand and 
 
 1. **Explore Examples**: Review reference implementations in your preferred language _(implementations in progress)_
 2. **Define Interfaces**: Create trait/interface definitions for your domain
-3. **Build Modules**: Implement interface-compliant modules
+3. **Build Components**: Implement interface-compliant components
 4. **Compose Applications**: Use DI registry to assemble functionality
 
 > **Note**: Reference implementations are currently being developed. See [implementation-examples.md](implementation-examples.md) for current progress and conceptual examples.
 
 ### **For Enterprises**
 
-1. **Assess Current Architecture**: Identify monolithic components suitable for modularization
-2. **Plan Migration Strategy**: Design interface boundaries and module responsibilities
+1. **Assess Current Architecture**: Identify monolithic components suitable for component-based composition
+2. **Plan Migration Strategy**: Design interface boundaries and component responsibilities
 3. **Pilot Implementation**: Start with non-critical system components
-4. **Scale Adoption**: Expand modular approach across application portfolio
+4. **Scale Adoption**: Expand component-based approach across application portfolio
 
 ### **For Contributors**
 
 1. **Join Community**: Participate in architecture discussions and RFC process
-2. **Develop Modules**: Create reusable modules for common enterprise needs
+2. **Develop Components**: Create reusable components for common enterprise needs
 3. **Improve Tooling**: Enhance developer experience and debugging capabilities
 4. **Share Knowledge**: Write tutorials, case studies, and best practices
 
@@ -350,7 +372,7 @@ This repository contains comprehensive documentation to help you understand and 
 ### **Success Metrics**
 
 - **GitHub Engagement**: Stars, issues, and community contributions
-- **Module Ecosystem**: Number of available modules and their adoption
+- **Component Ecosystem**: Number of available components and their adoption
 - **Enterprise Adoption**: Applications successfully built using JigsawFlow pattern
 - **Cross-Language Support**: Implementation across multiple programming languages
 
@@ -358,7 +380,7 @@ This repository contains comprehensive documentation to help you understand and 
 
 - **Q1 2025**: Core pattern specification and reference implementation _(in progress)_
 - **Q2 2025**: Developer tooling and documentation _(in progress)_
-- **Q3 2025**: RuntimeSwap module and dynamic loading capabilities _(planned)_
+- **Q3 2025**: RuntimeSwap component and dynamic loading capabilities _(planned)_
 - **Q4 2025**: Central registry and community contribution platform _(planned)_
 
 > **Current Focus**: Refining core architectural patterns and developing reference implementations based on real-world usage in production systems.
@@ -367,7 +389,7 @@ This repository contains comprehensive documentation to help you understand and 
 
 ## Contributing
 
-We welcome contributions from developers, architects, and industrial automation experts. Whether you're building modules, improving documentation, or sharing use cases, your input helps shape the future of modular application architecture.
+We welcome contributions from developers, architects, and industrial automation experts. Whether you're building components, improving documentation, or sharing use cases, your input helps shape the future of component-based application architecture.
 
 **Get Involved**:
 
