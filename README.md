@@ -18,13 +18,27 @@
 ![Status](https://img.shields.io/badge/status-work%20in%20progress-yellow?style=flat-square)
 </div>
 
+## Origin Story
+
+JigsawFlow emerged from a real-world developer productivity challenge. Imagine a developer who had standardized their workflow over years—building applications became largely copy/paste operations as most views, logic, and approaches were already covered in previous projects.
+
+The breakthrough came when this developer decided to modularize everything: views, logic, and services. The developer created a system where a simple package manager command (git, composer, npm, or custom CLI) could add any module to the current application. APIs were formalized, modules handled their own initialization, and the application immediately knew about new capabilities.
+
+When a customer needed user-management and invoice-management for their business, the developer simply asked a few questions and added the required modules like jigsaw pieces. The modules integrated seamlessly, offering the required functionality immediately.
+
+Each module injected its services into a common registry, making capabilities available across the entire application through flat access patterns—no hierarchical stacking like React components, just direct capability lookup. To achieve even better decoupling, the developer formalized communication interfaces—when code used a service that wasn't available, nothing failed catastrophically. Instead, warnings were logged and the application continued operating.
+
+Realizing that widespread community adoption of this pattern could transform application development entirely, the developer formalized this approach as the **JigsawFlow Microkernel Architecture**.
+
+---
+
 ## Overview
 
 JigsawFlow is a revolutionary microkernel architecture that transforms how enterprise applications are built through a **singleton registry pattern**. Inspired by battle-tested industrial automation systems like PLCs and SCADA architectures, JigsawFlow enables developers to construct robust applications where components access capabilities via standardized traits/interfaces rather than direct coupling.
 
 **Core Philosophy**: JigsawFlow applications emerge from a **singleton registry** that provides trait/interface-based access to all application capabilities. Components can optionally communicate through event-driven patterns when an event orchestrator component is present, but the registry remains the fundamental architecture. Applications can range from simple single-component solutions to complex event-driven networks, all built on the same registry foundation.
 
-The architecture centers on a **singleton registry microkernel** that provides trait/interface-based access to capabilities, with optional event-driven communication when components require it, creating applications that scale through capability composition rather than structural complexity.
+The architecture centers on a **singleton registry microkernel** that provides trait/interface-based access to capabilities, with optional event-driven communication when components require it, creating applications that scale through flat capability access rather than hierarchical structural complexity.
 
 ---
 
