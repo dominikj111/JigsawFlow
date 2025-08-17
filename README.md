@@ -20,63 +20,52 @@
 
 ## Overview
 
-JigsawFlow is a revolutionary architecture pattern that transforms how enterprise applications are built and composed. Inspired by battle-tested industrial automation systems like PLCs and SCADA architectures, JigsawFlow enables developers to construct robust applications through **compound component composition** with minimal integration overhead.
+JigsawFlow is a revolutionary microkernel architecture that transforms how enterprise applications are built through a **singleton registry pattern**. Inspired by battle-tested industrial automation systems like PLCs and SCADA architectures, JigsawFlow enables developers to construct robust applications where components access capabilities via standardized traits/interfaces rather than direct coupling.
 
-**Core Philosophy**: Following the proven PLC paradigm, JigsawFlow applications emerge through the strategic composition of specialized components, each focused on solving a specific domain problem. Just as PLC components contribute distinct capabilities to form comprehensive industrial control systems, JigsawFlow components bring focused expertise—user management, data persistence, communication protocols—that collectively shape the overall application architecture.
+**Core Philosophy**: JigsawFlow applications emerge from a **singleton registry** that provides trait/interface-based access to all application capabilities. Components can optionally communicate through event-driven patterns when an event orchestrator component is present, but the registry remains the fundamental architecture. Applications can range from simple single-component solutions to complex event-driven networks, all built on the same registry foundation.
 
-Unlike traditional software architecture approaches that require extensive glue code and tight coupling, JigsawFlow applications emerge organically from reusable, interface-compliant components managed through a centralized singleton registry.
+The architecture centers on a **singleton registry microkernel** that provides trait/interface-based access to capabilities, with optional event-driven communication when components require it, creating applications that scale through capability composition rather than structural complexity.
 
 ---
 
 ## What Makes JigsawFlow Different?
 
-### **Singleton Registry Architecture vs Traditional DI**
+### **Singleton Registry Architecture**
 
-JigsawFlow uses a singleton registry pattern, not traditional dependency injection:
+JigsawFlow operates through a **singleton registry** that provides trait/interface-based access to capabilities:
 
-**Traditional DI** (Constructor Injection):
+**Traditional Approach**: Components have direct dependencies and tight coupling between services.
 
-```rust
-// Framework-heavy, lifecycle management
-container.register::<DatabaseService, PostgresImpl>();
-let db = container.resolve::<DatabaseService>();
-```
+**JigsawFlow Registry Approach**: Components access capabilities through trait/interface contracts via the singleton registry. When components need event-driven communication, they access an event orchestrator component through the same registry pattern. If no event orchestrator is registered, components gracefully degrade with logging warnings rather than failing.
 
-**JigsawFlow Singleton Registry** (Type-Based Singleton Access):
+### **Singleton Registry Microkernel**
 
-```rust
-// Type-focused, hot-swappable singletons
-registry.register::<Storage>(postgres_component);
-let storage = registry.get::<Storage>();
-```
+JigsawFlow implements a **minimal microkernel** centered on the singleton registry:
 
-### **Singleton Registry vs Dependency Injection**
+**Universal Singleton Registry:**
 
-JigsawFlow uses a **singleton registry pattern**, not traditional dependency injection:
+- Stores ANY singleton struct (components, configs, utilities, models, services)
+- Trait/interface-based access with type safety
+- Hot-swappable implementations without restart
+- Thread-safe singleton replacement
+- Graceful degradation when requested capabilities are missing
 
-**Traditional DI:**
+**Optional Communication Components:**
 
-- Constructor/setter injection with framework lifecycle management
-- Compile-time dependency resolution and object graph construction
-- Framework controls object creation and disposal
-- Complex object graph management
-
-**JigsawFlow Singleton Registry:**
-
-- Global singleton store accessed by trait/interface/type
-- Runtime component discovery and hot-swapping
-- Service locator pattern with type safety
-- Write-once, read-many access pattern optimized for performance
-- Thread-safe singleton replacement without application restart
+- Event orchestrator is itself a component registered in the singleton registry
+- Communication components (IPC, Bluetooth, UDP, TCP/IP, HTTP) are registered as capabilities
+- Components access communication capabilities through the same trait/interface pattern
+- When communication components are missing, components log warnings and continue operation
+- Communication enhances but doesn't replace the core registry pattern
 
 **Language-Specific Implementations:**
 
-- **Rust**: Trait-based registry (`T: Send + Sync + 'static`)
-- **Java/C#**: Interface-based registry
-- **TypeScript**: Type-based registry
-- **Go**: Interface-based registry
+- **Rust**: Trait-based registry access
+- **Java/C#**: Interface-based registry access
+- **TypeScript**: Type-based registry access
+- **Go**: Interface-based registry access
 
-This approach enables the core JigsawFlow benefits: hot-swappable components, runtime composition, and zero-restart component replacement. The registry functions as a global service locator where components register their implementations and discover the services they need.
+This microkernel enables **capability-based scaling** where applications grow through registry-provided capabilities rather than structural complexity.
 
 ### **Unix Microkernel Principles at Application Level**
 
@@ -90,14 +79,20 @@ JigsawFlow applies proven Unix design principles to application architecture:
 | Process independence               | Component independence with graceful degradation |
 | Hot-swappable kernel modules       | Hot-swappable application components             |
 
-### **Emergent System Composition**
+### **Emergent Capability Composition**
 
-The real innovation isn't just modularization—it's **emergent composition**:
+The real innovation is **emergent capability access**:
 
-- **Traditional Architecture**: Explicitly designed, components know about each other
-- **JigsawFlow Architecture**: Applications emerge from available capabilities, components declare needs rather than dependencies
+- **Traditional Architecture**: Predefined component hierarchies and explicit dependencies
+- **JigsawFlow Architecture**: Applications emerge from available capabilities accessed through trait/interface contracts
 
-This creates a **userspace microkernel** where complex applications arise from simple, composable primitives—just like Unix achieved emergent complexity from basic process and file abstractions.
+Components access capabilities through the registry:
+
+- **Reactive Components**: Access event orchestrator capability when available, gracefully degrade when missing
+- **Proactive Components**: Drive application behavior through registry-provided capabilities
+- **Foundation Components**: Provide base infrastructure (configs, utilities, core services) via registry
+
+This creates a **capability-centric microkernel** where complex applications arise from simple registry access patterns—similar to how Unix achieved emergent complexity from file and process abstractions.
 
 ---
 
@@ -124,15 +119,33 @@ JigsawFlow draws inspiration from proven industrial automation patterns:
 
 ## Core Architecture
 
-### **Singleton Registry**
+### **Microkernel Components**
 
-The heart of JigsawFlow is a trait/interface-based singleton registry - a global singleton store that returns instances by trait/interface/type - that:
+**1. Universal Singleton Registry**
 
-- Registers components by their service interfaces, not concrete types
-- Enables singleton replacement without application restart
-- Provides language-agnostic service discovery
-- Functions as a thread-safe service locator for component services
-- Supports trait registry (Rust), interface registry (Java/C#), and type registry (TypeScript) patterns
+A trait/interface-based singleton store that manages ALL application singletons:
+
+- **Components**: Functional blocks providing capabilities
+- **Foundation Infrastructure**: Configs, utilities, models, core services
+- **Service Interfaces**: Trait/interface implementations
+- **Application State**: Any singleton struct relevant to the application
+
+Features:
+
+- Hot-swappable singleton replacement without restart
+- Language-agnostic trait/interface-based access
+- Thread-safe concurrent access patterns
+
+**2. Optional Communication Components**
+
+When communication components are registered, they enable various interaction patterns:
+
+- **Event-Driven Communication**: Event orchestrator component provides publish/subscribe capabilities
+- **Network Communication**: HTTP, TCP/IP, UDP components provide network-based interaction
+- **Inter-Process Communication**: IPC components enable process-to-process communication
+- **Device Communication**: Bluetooth, serial, or other protocol components for device interaction
+- **Graceful Degradation**: When communication components are missing, applications log warnings and continue
+- **Unified Access Pattern**: All communication types accessed through trait/interface contracts via registry
 
 ### **Component vs Plugin Distinction**
 
@@ -156,27 +169,35 @@ JigsawFlow uses precise terminology to distinguish between architectural and dep
 
 **Relationship:** Plugins are containers that deliver components to applications. A plugin typically packages related components together with their supporting resources for easy installation and distribution.
 
-### **Component Interface Compliance**
+### **Three Component Types**
 
-Every JigsawFlow component implements standardized interfaces for:
+**1. Foundation Components**
+Base application infrastructure registered as singletons: configurations, database pools, loggers, utilities, and core services that other components access via trait/interface contracts.
 
-- **Interface Definition**: What services the component provides/consumes
-- **Component Lifecycle**: Component registration, initialization and cleanup
+**2. Reactive Components**
+Components that access communication capabilities (event orchestrator, HTTP, TCP/IP, UDP, IPC, Bluetooth) through the registry. When communication components are missing, they log warnings and operate in degraded mode rather than failing.
 
-### **Compound Application Assembly**
+**3. Proactive Components**
+Components that drive application behavior through registry-provided capabilities. They may access communication capabilities (events, HTTP, TCP/IP, UDP, IPC, Bluetooth) when available, or operate through direct registry access patterns.
 
-Applications are built through **additive composition**:
+### **Registry-Based Application Assembly**
 
-1. Start with minimal core (singleton registry + main thread component)
-2. Add functionality by installing interface-compliant components
-3. Components self-register their capabilities upon loading (components can focus on or contain multiple solutions)
+Applications emerge through **capability registration**:
+
+1. **Initialize Microkernel**: Start singleton registry
+2. **Load Foundation Components**: Register base infrastructure (configs, utilities, core services)
+3. **Register Capability Components**: Register domain logic components providing trait/interface implementations
+4. **Start Application Components**: Components access required capabilities through registry
+5. **Optional Communication Enhancement**: Register communication components (event orchestrator, HTTP, TCP/IP, UDP, IPC, Bluetooth) when inter-component or external communication is needed
+
+Components discover and access capabilities through trait/interface-based registry calls, creating scalable applications that gracefully degrade when optional capabilities are missing.
 
 ### **The Requirements**
 
 JigsawFlow components must adhere to three fundamental architectural constraints:
 
 - **Offline-First Design**: Components must function when network connectivity is lost (WiFi down, cables cut) but may utilize network protocols when available
-- **Component Independence**: Components must not directly depend on other components. For shared functionality, prefer extracting it into a separate shared component; when dependencies are unavailable, components should log and degrade gracefully
+- **Component Independence**: Components must not directly depend on other components. Components access capabilities through trait/interface contracts via the registry; when required capabilities are unavailable, components must log warnings and degrade gracefully rather than failing
 - **Facade Pattern**: All external dependencies (file I/O, environment access, system calls) must be wrapped through singleton registry facades
 
 _See [best-practices.md](best-practices.md) for detailed implementation guidance and testing strategies._
@@ -238,21 +259,22 @@ Simplify complex distributed system management:
 
 Establish a comprehensive collection of standardized traits/interfaces for common functionality across all supported languages. This standardization addresses two critical areas:
 
-**1. Singleton Registry Standards**
+**1. Trait/Interface Standards**
 
-- Define problem-solution contracts through standardized trait/interface definitions
-- Enable community-driven component development where components provide solutions to well-defined problems
-- Create language-agnostic specifications that translate to idiomatic implementations in each target language
+- Define standardized capability contracts (Storage, Authentication, Logging, etc.)
+- Enable community-driven component development through well-defined problem-solution interfaces
+- Create language-agnostic specifications that translate to idiomatic implementations
 - Establish component certification and compatibility frameworks
 
-**2. Communication Protocol Definitions**
+**2. Event Communication Standards**
 
-- Standardize event-driven communication patterns across protocol boundaries
-- Define message shapes and interface contracts for inter-component communication
-- Enable components to send events implementing specific traits/interfaces while other components listen for compatible event types
-- Support both intra-application and cross-application communication patterns
+- Standardize event-driven communication patterns through trait/interface-based events
+- Define event contracts and message shapes for inter-component communication
+- Enable components to emit/subscribe to events implementing specific traits/interfaces
+- Support both intra-application and cross-application communication networks
+- Create rich, standardized communication vocabulary for component networks
 
-This approach mirrors industrial automation standards, where discussed contracts enable polyglot systems through well-defined, battle-tested interface specifications.
+This approach mirrors industrial automation standards, where standardized communication protocols enable polyglot systems through well-defined, battle-tested interface specifications—but extends beyond simple signals to rich, trait-based event networks.
 
 ### **GUI-as-a-Service Architecture**
 
@@ -260,7 +282,7 @@ This approach mirrors industrial automation standards, where discussed contracts
 
 JigsawFlow enables revolutionary GUI architecture where applications become pure business logic while GUI rendering becomes a dedicated capability component:
 
-- **Contract-Based GUI Rendering**: Applications send declarative UI specifications via singleton registry events, eliminating the need for GUI libraries in business logic
+- **Contract-Based GUI Rendering**: Applications send declarative UI specifications via communication components when available, eliminating the need for GUI libraries in business logic
 - **Language-Agnostic GUI Services**: Backend services in Rust, Python, Go, etc. leverage unified GUI infrastructure without language-specific bindings
 - **Hot-Swappable UI Components**: GUI components update independently from application logic, enabling live UI theming and layout changes
 - **Network-Distributed Applications**: P2P secure connections enable GUI components to run on different machines—applications become truly distributed without installation requirements
@@ -347,7 +369,7 @@ This repository contains comprehensive documentation to help you understand and 
 1. **Explore Examples**: Review reference implementations in your preferred language _(implementations in progress)_
 2. **Define Interfaces**: Create trait/interface definitions for your domain
 3. **Build Components**: Implement interface-compliant components
-4. **Compose Applications**: Use DI registry to assemble functionality
+4. **Compose Applications**: Use singleton registry to access capabilities
 
 > **Note**: Reference implementations are currently being developed. See [implementation-examples.md](implementation-examples.md) for current progress and conceptual examples.
 

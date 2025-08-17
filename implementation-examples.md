@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD024 -->
+
 # JigsawFlow Implementation Examples
 
 This document presents real-world examples demonstrating how the JigsawFlow architecture pattern can be applied across different technologies and domains. Each example shows practical implementation of modular, composable systems that follow JigsawFlow principles.
@@ -36,7 +38,7 @@ IPC Command → Main Thread → Component Processor → Action Execution
 **Current Implementation:**
 
 - Commands and processors are linked via `LazyLock<HashMap<String, Arc<dyn Command>>>`
-- Components access main application API through channels or singleton registry singletons
+- Components access main application API through channels or singleton registry
 - Multithreading approach allows components to consume main app APIs safely
 
 **Key Insights:**
@@ -119,7 +121,7 @@ Need to replace/extend → Install new component version → Automatic integrati
 - **Hot-Swappable UI**: Add or replace functionality by installing new component elements
 - **Storybook Alignment**: Natural integration with existing component development tools
 
-**Note**: While traditional dependency injection frameworks aren't common in pure frontend applications, the modular composition and singleton registry principles still apply effectively.
+**Note**: While traditional dependency injection frameworks aren't common in pure frontend applications, JigsawFlow's singleton registry and modular composition principles still apply effectively.
 
 ---
 

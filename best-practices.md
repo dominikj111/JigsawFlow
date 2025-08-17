@@ -36,7 +36,7 @@ Components must never directly depend on other components. Any shared functional
 
 - **No Inter-Component Dependencies**: Components cannot directly reference or import other components
   **Shared Functionality Guidance**: If components need shared functionality, prefer extracting it into a separate shared component or refactor boundaries. Avoid tight coupling; prefer interfaces and graceful degradation
-  **Communication Flexibility**: Use the DI registry, event-driven messaging, channels, IPC, or other appropriate mechanisms—no single method is prescribed
+  **Communication Flexibility**: Use the singleton registry, event-driven messaging, channels, IPC, or other appropriate mechanisms—no single method is prescribed
 - **Interface-Based Coupling**: Components depend only on traits/interfaces, never concrete implementations
 
 **Enforcement Guidelines:**
@@ -72,7 +72,7 @@ All language standard utilities and environmental access must be wrapped through
 1. Create facade interfaces for all external operations
 2. Register concrete implementations in singleton registry during normal operation
 3. Register mock implementations during testing
-4. Modules access external functionality only through singleton registry facades
+4. Components access external functionality only through singleton registry facades
 
 ## Core Implementation Patterns
 
@@ -264,7 +264,7 @@ Design components to handle dependency failures gracefully:
 - Provide reduced functionality rather than complete failure
 - Log dependency issues for monitoring and debugging
 
-### Module Isolation
+### Component Isolation
 
 Prevent component failures from cascading across the application:
 
