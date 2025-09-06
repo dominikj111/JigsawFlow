@@ -32,9 +32,67 @@ Realizing that widespread community adoption of this pattern could transform app
 
 ---
 
+## The Paradigm Shift: From Software Development to Component Composition
+
+JigsawFlow represents a fundamental transformation in how we approach software creation—shifting from traditional **software development** to **component composition**. This paradigm change mirrors successful patterns already established in pluggable platforms, but JigsawFlow goes further by unifying not only the pluggable modules but also the engine that processes them, along with standardized communication protocols.
+
+### **The Two-Track Development Model**
+
+This architecture naturally splits software creation into two distinct disciplines:
+
+**1. Component Development**
+
+- Specialists create reusable, standardized components
+- Focus on specific domain expertise (authentication, payments, data processing)
+- Components satisfy well-defined trait/interface contracts
+- Similar to how automotive suppliers specialize in specific parts (engines, transmissions, electronics)
+
+**2. Application Assembly**
+
+- System architects compose working components without "glue" code
+- Components integrate seamlessly through standardized interfaces
+- No development experience required for basic composition
+- Similar to how mechanics can replace car parts without manufacturing expertise
+
+### **Industrial Heritage: PLC and Automotive Inspiration**
+
+JigsawFlow draws from two proven industrial approaches that demonstrate the power of standardized component interfaces:
+
+**PLC Systems:** Signal-driven components with standardized I/O interfaces enable process control through modular, replaceable units. However, they're limited to single-domain industrial automation.
+
+**Automotive Industry:** Cross-manufacturer component compatibility through standardized interfaces (electrical connections, mounting points, CAN bus protocols) allows any garage to replace parts without engineering expertise.
+
+**JigsawFlow's Innovation:** Combines the best of both—PLC-style modular components with automotive-style cross-domain standardization, enabling components from different vendors, languages, and domains to interoperate seamlessly through universal trait/interface contracts.
+
+### **Addressing Industry Standardization**
+
+This approach directly addresses a critical issue in software development:
+
+> Software development suffers from a lack of standardized role definitions and salary bands. Unlike regulated professions such as medicine, compensation in IT is fluid, inconsistent, and often opaque, driven by market forces rather than formal structures.
+
+JigsawFlow's component-based model creates natural role specialization:
+
+- **Component Specialists**: Deep domain experts creating certified, reusable components
+- **System Integrators**: Architects composing components into complete applications
+- **Maintenance Technicians**: Operators replacing and updating components in production
+
+This specialization enables clearer role definitions, standardized skill requirements, and more predictable career paths—similar to how the automotive industry has distinct roles for design engineers, assembly technicians, and service mechanics.
+
+### **Beyond Domain-Locked Platforms**
+
+Existing modular systems (WordPress plugins, VS Code extensions, PLC modules, automotive ECUs) are domain-specific. JigsawFlow breaks these boundaries by unifying:
+
+1. **Universal Component Interfaces**: Trait/interface contracts that work across any domain
+2. **Cross-Language Processing Engine**: Rust and PHP engines can interact seamlessly
+3. **Multi-Protocol Communication**: From industrial Modbus to web HTTP, all through standardized patterns
+
+This enables **true cross-domain composition**—imagine a Rust-based data processing component working with PHP web components and PLC control modules in the same application, all hot-swappable without system knowledge.
+
+---
+
 ## Overview
 
-JigsawFlow is a revolutionary microkernel architecture that transforms how enterprise applications are built through a **singleton registry pattern**. Inspired by battle-tested industrial automation systems like PLCs and SCADA architectures, JigsawFlow enables developers to construct robust applications where components access capabilities via standardized traits/interfaces rather than direct coupling.
+JigsawFlow is a revolutionary microkernel architecture that transforms how enterprise applications are built through a **singleton registry pattern**. Inspired by battle-tested industrial automation systems like PLCs and SCADA architectures, as well as the automotive industry's standardized component approach, JigsawFlow enables developers to construct robust applications where components access capabilities via standardized traits/interfaces rather than direct coupling.
 
 **Core Philosophy**: JigsawFlow applications emerge from a **singleton registry** that provides trait/interface-based access to all application capabilities. Components can optionally communicate through event-driven patterns when an event orchestrator component is present, but the registry remains the fundamental architecture. Applications can range from simple single-component solutions to complex event-driven networks, all built on the same registry foundation.
 
@@ -114,10 +172,11 @@ This creates a **capability-centric microkernel** where complex applications ari
 
 ### **Industrial-Strength Foundation**
 
-JigsawFlow draws inspiration from proven industrial automation patterns:
+JigsawFlow draws inspiration from proven industrial patterns:
 
 - **PLC Systems**: Modular, signal-driven components with standardized interfaces
 - **SCADA Architecture**: Centralized control with distributed, autonomous components
+- **Automotive Industry**: Standardized component interfaces enabling cross-manufacturer compatibility
 - **Component-Based Software Engineering (CBSE)**: Reusable, qualified components with defined interfaces
 - **Microservice Orchestration**: Loosely coupled services with clear boundaries
 
@@ -125,7 +184,7 @@ JigsawFlow draws inspiration from proven industrial automation patterns:
 
 - **Rapid Application Assembly**: Build complex systems by composing pre-built components
 - **Zero-Restart Hot-Swapping**: Replace functionality without application downtime (Phase 1 supports DI singleton replacement; Phase 2 adds dynamic library loading via RuntimeSwap)
-- **Polyglot System Architecture**: Build cross-language applications through communication components (Bluetooth, P2P, TCP/IP, UDP, Modbus) that enable JigsawFlow implementations across Java, C#, JavaScript/TypeScript, Rust, and other languages to interoperate seamlessly
+- **Cross-Domain Polyglot Architecture**: Build applications spanning multiple domains and languages—a Rust-based data processing engine can seamlessly interact with PHP-based web components, enabling true cross-domain composition through standardized communication protocols (Bluetooth, P2P, TCP/IP, UDP, Modbus, IPC, ...)
 - **Minimal Integration Overhead**: Singleton registry handles component coordination
 - **Community-Driven Ecosystem**: Shared component repository for common functionality
 
@@ -228,13 +287,14 @@ Transform monolithic applications into composable, maintainable systems:
 - **Data Processing Pipelines**: Input + Transform + Output + Persistence components
 - **IoT Platforms**: Device Communication + Data Collection + Analytics components
 
-### **Industrial Automation**
+### **Industrial Automation & Automotive**
 
-Leverage familiar PLC-style programming for software systems:
+Leverage familiar PLC and automotive-style programming for software systems:
 
-- **Process Control**: Sensor Input + Logic Processing + Actuator Output components
+- **Process Control**: Sensor Input + Logic Processing + Actuator Output components (PLC-style)
 - **SCADA Integration**: Data Acquisition + Supervisory Control + HMI components
 - **Manufacturing Execution**: Workflow + Quality Control + Reporting components
+- **Automotive Systems**: ECU Communication + Diagnostic + Control Module components
 
 ### **Desktop & GUI Applications**
 
@@ -288,7 +348,7 @@ Establish a comprehensive collection of standardized traits/interfaces for commo
 - Support both intra-application and cross-application communication networks
 - Create rich, standardized communication vocabulary for component networks
 
-This approach mirrors industrial automation standards, where standardized communication protocols enable polyglot systems through well-defined, battle-tested interface specifications—but extends beyond simple signals to rich, trait-based event networks.
+This extends industrial automation's proven approach—where standardized protocols enable reliable polyglot systems—beyond simple signals to rich, trait-based communication networks spanning any domain.
 
 ### **GUI-as-a-Service Architecture**
 
@@ -345,14 +405,17 @@ This transforms software distribution from "install and run" to "connect and com
 
 ## Architecture Comparison
 
-| Pattern        | Coupling              | Hot-Swap   | Multithreading | Communication Types | Interface Focus   | Industrial Heritage |
-| -------------- | --------------------- | ---------- | -------------- | ------------------- | ----------------- | ------------------- |
-| **JigsawFlow** | Loose (DI Registry)   | ✅ Yes     | ✅ Native      | ✅ Multi-Protocol   | ✅ Trait-based    | ✅ PLC/SCADA        |
-| PLC Systems    | Loose (Signal Bus)    | ⚠️ Limited | ❌ Single      | ⚠️ Signal-based     | ✅ Standard I/O   | ✅ Industrial       |
-| Traditional DI | Medium (Framework)    | ❌ No      | ⚠️ Framework   | ❌ In-Process       | ⚠️ Type-based     | ❌ No               |
-| Microservices  | Loose (Network)       | ✅ Yes     | ✅ Per Service | ⚠️ Network Only     | ⚠️ API-based      | ❌ No               |
-| Plugin Systems | Medium (Callbacks)    | ⚠️ Limited | ⚠️ Host App    | ❌ Callbacks        | ❌ Implementation | ❌ No               |
-| ECS Pattern    | Tight (Entity Tables) | ❌ No      | ⚠️ System      | ❌ Component Data   | ❌ Component      | ❌ No               |
+| Pattern        | Coupling              | Hot-Swap   | Cross-Domain | Communication Types | Interface Focus   | Offline-First | Language-Agnostic | Graceful Degradation | Industrial Heritage |
+| -------------- | --------------------- | ---------- | ------------ | ------------------- | ----------------- | ------------- | ----------------- | -------------------- | ------------------- |
+| **JigsawFlow** | Loose (DI Registry)   | ✅ Yes     | ✅ Yes       | ✅ Multi-Protocol   | ✅ Trait-based    | ✅ Yes        | ✅ Yes            | ✅ Yes               | ✅ PLC/Automotive   |
+| PLC Systems    | Loose (Signal Bus)    | ⚠️ Limited | ❌ No        | ⚠️ Signal-based     | ✅ Standard I/O   | ✅ Yes        | ❌ No             | ⚠️ Limited           | ✅ Industrial       |
+| Automotive ECU | Loose (CAN Bus)       | ⚠️ Limited | ⚠️ Limited   | ⚠️ CAN/LIN          | ✅ Standard       | ✅ Yes        | ❌ No             | ⚠️ Limited           | ✅ Automotive       |
+| Traditional DI | Medium (Framework)    | ❌ No      | ❌ No        | ❌ In-Process       | ⚠️ Type-based     | ⚠️ Depends    | ❌ No             | ❌ No                | ❌ No               |
+| Microservices  | Loose (Network)       | ✅ Yes     | ⚠️ Limited   | ⚠️ Network Only     | ⚠️ API-based      | ❌ No         | ✅ Yes            | ⚠️ Circuit Breaker   | ❌ No               |
+| Plugin Systems | Medium (Callbacks)    | ⚠️ Limited | ❌ No        | ❌ Callbacks        | ❌ Implementation | ⚠️ Depends    | ❌ No             | ❌ No                | ❌ No               |
+| ECS Pattern    | Tight (Entity Tables) | ❌ No      | ❌ No        | ❌ Component Data   | ❌ Component      | ⚠️ Depends    | ❌ No             | ❌ No                | ❌ No               |
+| OSGi/JPMS      | Medium (Modules)      | ✅ Yes     | ❌ No        | ❌ In-Process       | ⚠️ Service-based  | ⚠️ Depends    | ❌ Java Only      | ❌ No                | ❌ No               |
+| Actor Model    | Loose (Messages)      | ⚠️ Limited | ❌ No        | ✅ Message Passing  | ⚠️ Message-based  | ⚠️ Depends    | ✅ Yes            | ✅ Supervision       | ❌ No               |
 
 ---
 
