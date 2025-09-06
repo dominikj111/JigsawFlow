@@ -8,7 +8,7 @@
   
   **JigsawFlow Microkernel** — A Capability-Driven Architecture for Offline-First, Hot-Swappable, Language-Agnostic Applications
   
-  _An enterprise-grade pattern for building modular software systems_
+  _An enterprise-grade pattern for building modular polyglot software systems_
   
   > ⚠️ **Work in Progress**: This is an evolving architectural pattern. The specification and examples are actively being developed and refined based on real-world implementations and community feedback.
   
@@ -17,6 +17,35 @@
 [![License](https://img.shields.io/badge/license-CC0%201.0%20%2B%20CC%20BY--SA%204.0-blue?style=flat-square)](LICENSE)
 ![Status](https://img.shields.io/badge/status-work%20in%20progress-yellow?style=flat-square)
 </div>
+
+## What is JigsawFlow?
+
+JigsawFlow is a **universal, language-agnostic host for modular applications**. Unlike traditional plugin systems that assume a main application with add-ons, JigsawFlow treats the entire application as modular—the "kernel" is almost invisible, simply enforcing contracts, lifecycle, and hot-swap capabilities.
+
+### **Core Value Proposition**
+
+**🚀 Single Developer Speed**  
+Stop reinventing integration layers. Write a module once, reuse it everywhere. No more rebuilding authentication, logging, or data processing from scratch for each project.
+
+**🌐 Cross-Domain Reuse**  
+A module written for IoT can work in SaaS, robotics, or industrial automation. True cross-domain composition through standardized interfaces.
+
+**🔄 Polyglot Freedom**  
+Implement the same contract in Rust for speed, Python for prototyping, Node.js for networking. All implementations are functionally identical and interchangeable.
+
+**🧪 Unified Testing**  
+The same end-to-end test works across all implementations. Testing becomes diagnosis—swap a slow Python module for a fast Rust one, and your tests confirm identical behavior.
+
+### **Beyond Plugin Systems**
+
+Traditional plugin architectures assume a core application that plugins extend. JigsawFlow inverts this—**the whole application is modular**. There's no "main app"—just a minimal microkernel that:
+
+- Enforces interface contracts
+- Manages component lifecycle
+- Enables hot-swapping without restart
+- Provides graceful degradation when components are missing
+
+This isn't just a better plugin system—it's a **fundamental shift in application development design** that will eventually replace current application-layer module systems.
 
 ## Origin Story
 
@@ -98,37 +127,11 @@ JigsawFlow is a revolutionary microkernel architecture that transforms how enter
 
 The architecture centers on a **singleton registry microkernel** that provides trait/interface-based access to capabilities, with optional event-driven communication when components require it, creating applications that scale through flat capability access rather than hierarchical structural complexity.
 
----
-
-## What Makes JigsawFlow Different?
-
-### **Singleton Registry Architecture**
-
-JigsawFlow operates through a **singleton registry** that provides trait/interface-based access to capabilities:
+### **What Makes JigsawFlow Different?**
 
 **Traditional Approach**: Components have direct dependencies and tight coupling between services.
 
 **JigsawFlow Registry Approach**: Components access capabilities through trait/interface contracts via the singleton registry. When components need event-driven communication, they access an event orchestrator component through the same registry pattern. If no event orchestrator is registered, components gracefully degrade with logging warnings rather than failing.
-
-### **Singleton Registry Microkernel**
-
-JigsawFlow implements a **minimal microkernel** centered on the singleton registry:
-
-**Universal Singleton Registry:**
-
-- Stores ANY singleton struct (components, configs, utilities, models, services)
-- Trait/interface-based access with type safety
-- Hot-swappable implementations without restart
-- Thread-safe singleton replacement
-- Graceful degradation when requested capabilities are missing
-
-**Optional Communication Components:**
-
-- Event orchestrator is itself a component registered in the singleton registry
-- Communication components (IPC, Bluetooth, UDP, TCP/IP, HTTP) are registered as capabilities
-- Components access communication capabilities through the same trait/interface pattern
-- When communication components are missing, components log warnings and continue operation
-- Communication enhances but doesn't replace the core registry pattern
 
 **Language-Specific Implementations:**
 
@@ -157,12 +160,6 @@ The real innovation is **emergent capability access**:
 
 - **Traditional Architecture**: Predefined component hierarchies and explicit dependencies
 - **JigsawFlow Architecture**: Applications emerge from available capabilities accessed through trait/interface contracts
-
-Components access capabilities through the registry:
-
-- **Reactive Components**: Access event orchestrator capability when available, gracefully degrade when missing
-- **Proactive Components**: Drive application behavior through registry-provided capabilities
-- **Foundation Components**: Provide base infrastructure (configs, utilities, core services) via registry
 
 This creates a **capability-centric microkernel** where complex applications arise from simple registry access patterns—similar to how Unix achieved emergent complexity from file and process abstractions.
 
