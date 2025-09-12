@@ -47,6 +47,37 @@ Traditional plugin architectures assume a core application that plugins extend. 
 
 This isn't just a better plugin system—it's a **fundamental shift in application development design** that will eventually replace current application-layer module systems.
 
+### **Higher-Order Framework Architecture**
+
+JigsawFlow represents a **higher-order framework** where complete applications emerge from:
+
+- **Standard Interface Collection**: Comprehensive library of standardized capability contracts with 1:1 module mappings
+- **Module Distribution System**: Common resource servers (similar to package.json) that automatically pull required modules when interfaces are selected
+- **Dummy/Fallback Modules**: Generic implementations satisfying standard interfaces when specific modules are unavailable, with error/warning logging
+- **Minimal Entry Module**: Dummy bootstrap that keeps the main thread alive—can be custom or default
+- **Business Logic Module**: The primary custom development—translates application requirements into interface contracts and implements domain-specific logic
+
+In mature JigsawFlow ecosystems, developers primarily:
+
+1. **Translate requirements into interface contracts** (capabilities/contracts) needed to satisfy application needs
+2. **Configure module sources** (remote servers, local paths) similar to package.json dependency management
+3. **Develop custom business logic module** implementing domain-specific functionality
+4. **Define GUI through declarative specifications** passed to GUI-as-a-Service modules
+5. **Let the system auto-compose** through interface contract fulfillment and fallback modules
+
+The application becomes **emergent behavior** from interface contract satisfaction, with robust degradation through dummy modules when specific implementations are unavailable.
+
+### **Seamless Legacy Integration**
+
+JigsawFlow's killer feature is **zero-risk migration from existing systems**. Any existing service, library, or application can become a JigsawFlow component through simple interface wrapping:
+
+- **No Code Changes Required**: Wrap existing functionality with trait/interface adapters
+- **Immediate Benefits**: Gain hot-swapping, testability, and modularity without rewriting working code  
+- **Gradual Enhancement**: Evolve wrapped components into native implementations over time
+- **Risk-Free Adoption**: Existing systems continue operating exactly as before
+
+**Example**: Transform a legacy authentication service into a JigsawFlow component in minutes—the original code never changes, but now it's hot-swappable and follows standardized interfaces.
+
 ## Origin Story
 
 JigsawFlow emerged from a real-world developer productivity challenge. Imagine a developer who had standardized their workflow over years—building applications became largely copy/paste operations as most views, logic, and approaches were already covered in previous projects.
@@ -353,10 +384,12 @@ This extends industrial automation's proven approach—where standardized protoc
 
 JigsawFlow enables revolutionary GUI architecture where applications become pure business logic while GUI rendering becomes a dedicated capability component:
 
-- **Contract-Based GUI Rendering**: Applications send declarative UI specifications via communication components when available, eliminating the need for GUI libraries in business logic
+- **Declarative UI Specifications**: Applications send declarative UI configurations via communication components, eliminating the need for GUI libraries in business logic
 - **Language-Agnostic GUI Services**: Backend services in Rust, Python, Go, etc. leverage unified GUI infrastructure without language-specific bindings
 - **Hot-Swappable UI Components**: GUI components update independently from application logic, enabling live UI theming and layout changes
 - **Network-Distributed Applications**: P2P secure connections enable GUI components to run on different machines—applications become truly distributed without installation requirements
+- **Flexible UI Config Formats**: UI configurations use formats determined by the GUI module—HTML-like syntax, JSON, or more concise custom formats
+- **GUI Module Transformation**: GUI modules transform declarative specifications into platform-specific buttons, text inputs, dropdowns, or 2D elements based on module capabilities
 - **WorkFlows OS Integration**: GUI service components serve as core system services, providing unified desktop experiences across all applications
 
 **Revolutionary Distribution Model**
@@ -369,6 +402,12 @@ The most exciting aspect: applications no longer require local installation. Thr
 - Zero-installation application ecosystem emerges naturally
 
 This transforms software distribution from "install and run" to "connect and compose"—applications become network-native capabilities that assemble on-demand.
+
+**Cross-Platform Unification:**
+
+- Same business module works with web, desktop, mobile GUI modules
+- GUI modules handle platform-specific rendering and interaction patterns
+- Business logic remains completely platform-agnostic
 
 ### **Dynamic Loading Capabilities**
 
@@ -402,17 +441,53 @@ This transforms software distribution from "install and run" to "connect and com
 
 ## Architecture Comparison
 
-| Pattern        | Coupling              | Hot-Swap   | Cross-Domain | Communication Types | Interface Focus   | Offline-First | Language-Agnostic | Graceful Degradation | Industrial Heritage |
-| -------------- | --------------------- | ---------- | ------------ | ------------------- | ----------------- | ------------- | ----------------- | -------------------- | ------------------- |
-| **JigsawFlow** | Loose (DI Registry)   | ✅ Yes     | ✅ Yes       | ✅ Multi-Protocol   | ✅ Trait-based    | ✅ Yes        | ✅ Yes            | ✅ Yes               | ✅ PLC/Automotive   |
-| PLC Systems    | Loose (Signal Bus)    | ⚠️ Limited | ❌ No        | ⚠️ Signal-based     | ✅ Standard I/O   | ✅ Yes        | ❌ No             | ⚠️ Limited           | ✅ Industrial       |
-| Automotive ECU | Loose (CAN Bus)       | ⚠️ Limited | ⚠️ Limited   | ⚠️ CAN/LIN          | ✅ Standard       | ✅ Yes        | ❌ No             | ⚠️ Limited           | ✅ Automotive       |
-| Traditional DI | Medium (Framework)    | ❌ No      | ❌ No        | ❌ In-Process       | ⚠️ Type-based     | ⚠️ Depends    | ❌ No             | ❌ No                | ❌ No               |
-| Microservices  | Loose (Network)       | ✅ Yes     | ⚠️ Limited   | ⚠️ Network Only     | ⚠️ API-based      | ❌ No         | ✅ Yes            | ⚠️ Circuit Breaker   | ❌ No               |
-| Plugin Systems | Medium (Callbacks)    | ⚠️ Limited | ❌ No        | ❌ Callbacks        | ❌ Implementation | ⚠️ Depends    | ❌ No             | ❌ No                | ❌ No               |
-| ECS Pattern    | Tight (Entity Tables) | ❌ No      | ❌ No        | ❌ Component Data   | ❌ Component      | ⚠️ Depends    | ❌ No             | ❌ No                | ❌ No               |
-| OSGi/JPMS      | Medium (Modules)      | ✅ Yes     | ❌ No        | ❌ In-Process       | ⚠️ Service-based  | ⚠️ Depends    | ❌ Java Only      | ❌ No                | ❌ No               |
-| Actor Model    | Loose (Messages)      | ⚠️ Limited | ❌ No        | ✅ Message Passing  | ⚠️ Message-based  | ⚠️ Depends    | ✅ Yes            | ✅ Supervision       | ❌ No               |
+| Pattern        | Coupling              | Hot-Swap   | Cross-Domain | Communication Types | Interface Focus   | Offline-First | Language-Agnostic | Graceful Degradation | Industrial Heritage | Rapid Prototyping |
+| -------------- | --------------------- | ---------- | ------------ | ------------------- | ----------------- | ------------- | ----------------- | -------------------- | ------------------- | ----------------- |
+| **JigsawFlow** | Loose (DI Registry)   | ✅ Yes     | ✅ Yes       | ✅ Multi-Protocol   | ✅ Trait-based    | ✅ Yes        | ✅ Yes            | ✅ Yes               | ✅ PLC/Automotive   | ✅ Component Reuse |
+| PLC Systems    | Loose (Signal Bus)    | ⚠️ Limited | ❌ No        | ⚠️ Signal-based     | ✅ Standard I/O   | ✅ Yes        | ❌ No             | ⚠️ Limited           | ✅ Industrial       | ⚠️ Limited        |
+| Automotive ECU | Loose (CAN Bus)       | ⚠️ Limited | ⚠️ Limited   | ⚠️ CAN/LIN          | ✅ Standard       | ✅ Yes        | ❌ No             | ⚠️ Limited           | ✅ Automotive       | ❌ No             |
+| Traditional DI | Medium (Framework)    | ❌ No      | ❌ No        | ❌ In-Process       | ⚠️ Type-based     | ⚠️ Depends    | ❌ No             | ❌ No                | ❌ No               | ⚠️ Manual Assembly |
+| Microservices  | Loose (Network)       | ✅ Yes     | ⚠️ Limited   | ⚠️ Network Only     | ⚠️ API-based      | ❌ No         | ✅ Yes            | ⚠️ Circuit Breaker   | ❌ No               | ❌ Complex Setup  |
+| Plugin Systems | Medium (Callbacks)    | ⚠️ Limited | ❌ No        | ❌ Callbacks        | ❌ Implementation | ⚠️ Depends    | ❌ No             | ❌ No                | ❌ No               | ⚠️ Domain-Specific |
+| ECS Pattern    | Tight (Entity Tables) | ❌ No      | ❌ No        | ❌ Component Data   | ❌ Component      | ⚠️ Depends    | ❌ No             | ❌ No                | ❌ No               | ⚠️ Gaming Only    |
+| OSGi/JPMS      | Medium (Modules)      | ✅ Yes     | ❌ No        | ❌ In-Process       | ⚠️ Service-based  | ⚠️ Depends    | ❌ Java Only      | ❌ No                | ❌ No               | ⚠️ Complex Config |
+| Actor Model    | Loose (Messages)      | ⚠️ Limited | ❌ No        | ✅ Message Passing  | ⚠️ Message-based  | ⚠️ Depends    | ✅ Yes            | ✅ Supervision       | ❌ No               | ⚠️ Message Design |
+
+---
+
+## JigsawFlow vs. Spec-Kit: Complementary Methodologies
+
+Both JigsawFlow and [Spec-Kit](https://github.com/github/spec-kit) represent **methodological approaches** to software development, but they operate at different layers and can work together:
+
+### **Capability-Driven vs. Specification-Driven Development**
+
+**JigsawFlow Methodology:**
+
+- **Focus**: Define what capabilities your application needs—modules auto-compose through interface requirements
+- **AI Role**: Optional—can assist with module creation, but the methodology works transparently without AI
+- **Development Flow**: Define needed capabilities → Add modules to common pool → Modules auto-discover and communicate through shared interfaces
+- **Core Benefit**: Transparent, maintainable systems with separated business logic that's directly testable
+- **Philosophy**: "What capabilities do I need to cover in my application?" (Modules handle their own composition automatically)
+
+**Spec-Kit Methodology:**
+
+- **Focus**: Spec-Driven Development—specifications become executable and directly generate working implementations  
+- **AI Role**: Heavy reliance on advanced AI model capabilities for specification interpretation and code generation
+- **Development Flow**: Create executable specifications → Generate technical plans → Break down into tasks → AI implements features
+- **Core Benefit**: Build high-quality software faster by focusing on product scenarios rather than undifferentiated code
+- **Philosophy**: "Specifications become executable"—flip from code-first to specification-first development
+
+### **Why They're Complementary**
+
+These methodologies address different problems and can work together effectively:
+
+- **JigsawFlow**: Solves application composition and runtime modularity
+- **Spec-Kit**: Solves rapid code generation from natural language specifications
+- **Combined**: Use Spec-Kit to generate JigsawFlow-compliant modules, then compose them using JigsawFlow's capability-driven approach
+
+The key insight: JigsawFlow creates **transparent, maintainable systems** where business logic is isolated and directly testable through interface contracts, while Spec-Kit accelerates the creation of individual components through AI-assisted generation.
+
+**When to consider each:** JigsawFlow when you need runtime modularity and transparent architecture; Spec-Kit when you need rapid AI-assisted development. Use both when you want AI-generated components with runtime composition capabilities.
 
 ---
 
