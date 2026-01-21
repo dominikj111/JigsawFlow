@@ -90,6 +90,16 @@ Each module injected its services into a common registry, making capabilities av
 
 Realizing that widespread community adoption of this pattern could transform application development entirely, the developer formalized this approach as the **JigsawFlow Microkernel Architecture**.
 
+## Relationship to the HMVC Pattern
+
+JigsawFlow is conceptually related to the [Hierarchical Model–View–Controller (HMVC) pattern](https://luminova.ng/docs/3.4.0/introduction/hmvc-design) through its emphasis on self-contained, reusable modules and composition-driven application structure. Like HMVC, JigsawFlow encourages encapsulation of logic, configuration, and lifecycle within discrete units that can be reused across multiple applications and domains.
+
+However, JigsawFlow intentionally extends and generalizes HMVC beyond its traditional scope. While HMVC organizes modules hierarchically and relies on controller dispatch within request-driven application flows, JigsawFlow adopts a flat, capability-based composition model. Components do not form parent–child hierarchies or invoke each other directly; instead, they discover and access required functionality through standardized trait/interface contracts provided by a microkernel-level singleton registry.
+
+Furthermore, JigsawFlow is not limited to MVC or web-oriented execution models. The same architectural principles apply to long-running system daemons, desktop applications, embedded systems, and offline-first environments. Capability availability is treated as optional rather than mandatory—components are expected to degrade gracefully when certain capabilities are absent, rather than failing at runtime.
+
+In this sense, JigsawFlow can be understood as an HMVC-inspired architectural evolution: it preserves the modularity and reuse benefits of HMVC while removing hierarchical constraints, framework coupling, and domain-specific assumptions, resulting in a general-purpose, language-agnostic component architecture.
+
 ---
 
 ## The Paradigm Shift: From Software Development to Component Composition
@@ -441,17 +451,17 @@ This transforms software distribution from "install and run" to "connect and com
 
 ## Architecture Comparison
 
-| Pattern        | Coupling              | Hot-Swap   | Cross-Domain | Communication Types | Interface Focus   | Offline-First | Language-Agnostic | Graceful Degradation | Industrial Heritage | Rapid Prototyping |
-| -------------- | --------------------- | ---------- | ------------ | ------------------- | ----------------- | ------------- | ----------------- | -------------------- | ------------------- | ----------------- |
-| **JigsawFlow** | Loose (DI Registry)   | ✅ Yes     | ✅ Yes       | ✅ Multi-Protocol   | ✅ Trait-based    | ✅ Yes        | ✅ Yes            | ✅ Yes               | ✅ PLC/Automotive   | ✅ Component Reuse |
-| PLC Systems    | Loose (Signal Bus)    | ⚠️ Limited | ❌ No        | ⚠️ Signal-based     | ✅ Standard I/O   | ✅ Yes        | ❌ No             | ⚠️ Limited           | ✅ Industrial       | ⚠️ Limited        |
-| Automotive ECU | Loose (CAN Bus)       | ⚠️ Limited | ⚠️ Limited   | ⚠️ CAN/LIN          | ✅ Standard       | ✅ Yes        | ❌ No             | ⚠️ Limited           | ✅ Automotive       | ❌ No             |
-| Traditional DI | Medium (Framework)    | ❌ No      | ❌ No        | ❌ In-Process       | ⚠️ Type-based     | ⚠️ Depends    | ❌ No             | ❌ No                | ❌ No               | ⚠️ Manual Assembly |
-| Microservices  | Loose (Network)       | ✅ Yes     | ⚠️ Limited   | ⚠️ Network Only     | ⚠️ API-based      | ❌ No         | ✅ Yes            | ⚠️ Circuit Breaker   | ❌ No               | ❌ Complex Setup  |
-| Plugin Systems | Medium (Callbacks)    | ⚠️ Limited | ❌ No        | ❌ Callbacks        | ❌ Implementation | ⚠️ Depends    | ❌ No             | ❌ No                | ❌ No               | ⚠️ Domain-Specific |
-| ECS Pattern    | Tight (Entity Tables) | ❌ No      | ❌ No        | ❌ Component Data   | ❌ Component      | ⚠️ Depends    | ❌ No             | ❌ No                | ❌ No               | ⚠️ Gaming Only    |
-| OSGi/JPMS      | Medium (Modules)      | ✅ Yes     | ❌ No        | ❌ In-Process       | ⚠️ Service-based  | ⚠️ Depends    | ❌ Java Only      | ❌ No                | ❌ No               | ⚠️ Complex Config |
-| Actor Model    | Loose (Messages)      | ⚠️ Limited | ❌ No        | ✅ Message Passing  | ⚠️ Message-based  | ⚠️ Depends    | ✅ Yes            | ✅ Supervision       | ❌ No               | ⚠️ Message Design |
+| Pattern        | Coupling              | Hot-Swap  | Cross-Domain | Communication Types | Interface Focus  | Offline-First | Language-Agnostic | Graceful Degradation | Industrial Heritage | Rapid Prototyping |
+| -------------- | --------------------- | --------- | ------------ | ------------------- | ---------------- | ------------- | ----------------- | -------------------- | ------------------- | ----------------- |
+| **JigsawFlow** | Loose (DI Registry)   | ✅ Yes     | ✅ Yes        | ✅ Multi-Protocol    | ✅ Trait-based    | ✅ Yes         | ✅ Yes             | ✅ Yes                | ✅ PLC/Automotive    | ✅ Component Reuse |
+| PLC Systems    | Loose (Signal Bus)    | ⚠️ Limited | ❌ No         | ⚠️ Signal-based      | ✅ Standard I/O   | ✅ Yes         | ❌ No              | ⚠️ Limited            | ✅ Industrial        | ⚠️ Limited         |
+| Automotive ECU | Loose (CAN Bus)       | ⚠️ Limited | ⚠️ Limited    | ⚠️ CAN/LIN           | ✅ Standard       | ✅ Yes         | ❌ No              | ⚠️ Limited            | ✅ Automotive        | ❌ No              |
+| Traditional DI | Medium (Framework)    | ❌ No      | ❌ No         | ❌ In-Process        | ⚠️ Type-based     | ⚠️ Depends     | ❌ No              | ❌ No                 | ❌ No                | ⚠️ Manual Assembly |
+| Microservices  | Loose (Network)       | ✅ Yes     | ⚠️ Limited    | ⚠️ Network Only      | ⚠️ API-based      | ❌ No          | ✅ Yes             | ⚠️ Circuit Breaker    | ❌ No                | ❌ Complex Setup   |
+| Plugin Systems | Medium (Callbacks)    | ⚠️ Limited | ❌ No         | ❌ Callbacks         | ❌ Implementation | ⚠️ Depends     | ❌ No              | ❌ No                 | ❌ No                | ⚠️ Domain-Specific |
+| ECS Pattern    | Tight (Entity Tables) | ❌ No      | ❌ No         | ❌ Component Data    | ❌ Component      | ⚠️ Depends     | ❌ No              | ❌ No                 | ❌ No                | ⚠️ Gaming Only     |
+| OSGi/JPMS      | Medium (Modules)      | ✅ Yes     | ❌ No         | ❌ In-Process        | ⚠️ Service-based  | ⚠️ Depends     | ❌ Java Only       | ❌ No                 | ❌ No                | ⚠️ Complex Config  |
+| Actor Model    | Loose (Messages)      | ⚠️ Limited | ❌ No         | ✅ Message Passing   | ⚠️ Message-based  | ⚠️ Depends     | ✅ Yes             | ✅ Supervision        | ❌ No                | ⚠️ Message Design  |
 
 ---
 
