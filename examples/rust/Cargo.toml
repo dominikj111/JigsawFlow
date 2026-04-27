@@ -1,0 +1,7 @@
+[package]
+name = "jigsawflow-rust-examples"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+singleton-registry = "2"
