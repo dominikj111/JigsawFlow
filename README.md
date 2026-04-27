@@ -45,7 +45,7 @@ Traditional plugin architectures assume a core application that plugins extend. 
 - Enables hot-swapping without restart
 - Provides graceful degradation when components are missing
 
-This isn't just a better plugin system—it's a **fundamental shift in application development design** that will eventually replace current application-layer module systems.
+This isn't just a better plugin system—it's a different way to think about how application capabilities are organized, accessed, and replaced.
 
 ### **Higher-Order Framework Architecture**
 
@@ -357,11 +357,19 @@ Simplify complex distributed system management:
 
 | Pattern                          | What it is                          | Where JigsawFlow differs                                                                    |
 | -------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------- |
+| Service Locator                  | Registry looked up at call site     | A service locator - plus offline-first, graceful degradation, and hot-swap. See note below. |
+| Dependency Injection container   | Dependencies injected by framework  | Makes dependencies visible in signatures; JigsawFlow trades this for hot-swap flexibility   |
 | Microkernel / Plug‑in            | Minimal core with plug‑ins          | You formalize plug‑in capabilities and offline‑first guarantees                             |
 | Hexagonal (Ports & Adapters)     | Domain wrapped by ports             | Ports/adapters map to service interfaces; singleton registry discovers/binds                |
 | Service‑oriented / Microservices | Network‑separated services          | JigsawFlow can be in‑proc or cross‑proc; components are composable without service overhead |
 | Actor model                      | Isolated entities exchange messages | Your components can adopt actors internally; the bus covers inter‑component traffic         |
 | OSGi/Module systems              | Runtime module lifecycles           | You keep it language‑agnostic and simpler (no classloader tricks)                           |
+
+### Service Locator and Dependency Injection — credit and trade-off
+
+JigsawFlow's singleton registry is a **service locator** in the sense Martin Fowler defined in his 2004 article [_Inversion of Control Containers and the Dependency Injection Pattern_](https://martinfowler.com/articles/injection.html#UsingAServiceLocator). Fowler's key observation: with a service locator every caller has a dependency on the locator itself, and the dependencies of a component are not visible from its signature — you have to read the body to find what it looks up.
+
+JigsawFlow accepts this trade-off deliberately. The benefit gained is that a component can ask for a capability that may not exist yet and degrade gracefully rather than failing at construction time. This is the right call for offline-first and hot-swap scenarios; it is the wrong call if your priority is making every dependency statically visible at the call site. Fowler's conclusion is still the relevant one: "The choice between Service Locator and Dependency Injection is less important than the principle of separating service configuration from the use of services." JigsawFlow's interface-contract requirement enforces exactly that separation.
 
 ---
 
@@ -392,7 +400,7 @@ This extends industrial automation's proven approach—where standardized protoc
 
 **Distributed GUI Rendering Capabilities**
 
-JigsawFlow enables revolutionary GUI architecture where applications become pure business logic while GUI rendering becomes a dedicated capability component:
+JigsawFlow enables a distributed GUI architecture where applications become pure business logic while GUI rendering becomes a dedicated capability component:
 
 - **Declarative UI Specifications**: Applications send declarative UI configurations via communication components, eliminating the need for GUI libraries in business logic
 - **Language-Agnostic GUI Services**: Backend services in Rust, Python, Go, etc. leverage unified GUI infrastructure without language-specific bindings
@@ -402,9 +410,9 @@ JigsawFlow enables revolutionary GUI architecture where applications become pure
 - **GUI Module Transformation**: GUI modules transform declarative specifications into platform-specific buttons, text inputs, dropdowns, or 2D elements based on module capabilities
 - **WorkFlows OS Integration**: GUI service components serve as core system services, providing unified desktop experiences across all applications
 
-**Revolutionary Distribution Model**
+**Capability-Native Distribution**
 
-The most exciting aspect: applications no longer require local installation. Through secure P2P networking:
+When P2P transport is in place, applications no longer require local installation. Through secure P2P networking:
 
 - Business logic runs on remote nodes
 - GUI renders locally via service contracts
@@ -418,6 +426,39 @@ This transforms software distribution from "install and run" to "connect and com
 - Same business module works with web, desktop, mobile GUI modules
 - GUI modules handle platform-specific rendering and interaction patterns
 - Business logic remains completely platform-agnostic
+
+### **Singleton Network — Distributed Registry**
+
+A network-aware registry layer that sits above the local singleton registry, enabling capabilities registered in one runtime to be transparently accessible from any other connected runtime.
+
+**How it works:**
+
+- Each runtime retains its own local registry as the source of truth for the capabilities it owns
+- When `registry.get(SomeCapability)` finds nothing locally, the singleton network discovers which connected runtime owns that capability and returns an auto-generated proxy
+- The proxy implements the same contract — business logic never changes; it just waits for an async response instead of getting a synchronous local value
+- Re-registering a capability network-wide follows the same overwrite semantics as the local registry: the new implementation becomes authoritative, the old provider drains in-flight work, then shuts down
+
+**Ownership rule:**
+
+Each capability has exactly one owning runtime. Other runtimes access it through proxies — either auto-generated by the singleton network, or written manually when explicit local vs. remote control is needed. Registering the same contract independently in two runtimes without one delegating to the other creates two divergent singletons; there is no automatic synchronization.
+
+**Async boundary:**
+
+Local capability resolution is synchronous. Network resolution is asynchronous. The singleton network makes this explicit — network-resolved capabilities return a `Promise`/`Future`. Hiding this distinction (as CORBA and Java RMI attempted) was the historical failure mode; JigsawFlow keeps the boundary visible.
+
+**Capability namespacing and multi-app composition:**
+
+In environments with multiple JigsawFlow applications sharing a network channel, capabilities are scoped. Each application exports an explicit subset of its capabilities to the shared channel. Request routing uses correlation IDs so responses travel back to the correct requester. Access control follows a role-based model — capabilities carry identity and permissions, and only authorised runtimes can register or invoke them.
+
+**Transport evolution path:**
+
+```text
+Phase 1  TCP/localhost + JSON-RPC  — single machine, minimal setup
+Phase 2  Unix domain sockets       — lower overhead for local IPC
+Phase 3  P2P transport (libp2p)    — distributed multi-machine networks
+```
+
+The registered contract never changes across phases; only the proxy's transport implementation is replaced — a singleton hot-swap at the infrastructure level.
 
 ### **Dynamic Loading Capabilities**
 
@@ -517,6 +558,7 @@ This repository contains comprehensive documentation to help you understand and 
 | ------------------------------ | ---------------------------------- | --------------------------- |
 | **README.md**                  | Architecture overview & philosophy | Understanding core concepts |
 | **best-practices.md**          | Implementation guidance & patterns | Building production systems |
+| **[`examples/`](examples/)**   | Runnable multi-language code       | Running examples locally    |
 | **implementation-examples.md** | Practical code examples            | Learning through examples   |
 
 ---
@@ -525,12 +567,12 @@ This repository contains comprehensive documentation to help you understand and 
 
 ### **For Developers**
 
-1. **Explore Examples**: Review reference implementations in your preferred language _(implementations in progress)_
+1. **Explore Examples**: Clone and run the [examples](examples/) — start with [`examples/rust/`](examples/rust/) for a working Rust reference
 2. **Define Interfaces**: Create trait/interface definitions for your domain
 3. **Build Components**: Implement interface-compliant components
 4. **Compose Applications**: Use singleton registry to access capabilities
 
-> **Note**: Reference implementations are currently being developed. See [implementation-examples.md](implementation-examples.md) for current progress and conceptual examples.
+> **Note**: See [implementation-examples.md](implementation-examples.md) for broader conceptual examples across domains.
 
 ### **For Enterprises**
 
@@ -593,4 +635,4 @@ We believe in open, collaborative development that benefits the entire software 
 
 ---
 
-**Ready to revolutionize your application architecture?** Start exploring JigsawFlow today and discover the power of industrial-grade modular composition.
+Start exploring JigsawFlow and discover the power of industrial-grade modular composition.

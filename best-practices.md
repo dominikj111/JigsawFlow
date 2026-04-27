@@ -286,6 +286,52 @@ Ensure safe component replacement during runtime:
 - Validate new component compatibility before activation
 - Provide rollback mechanisms for failed component updates
 
+**Distributed hot-swap — drain contract:**
+
+Within a single runtime, the reference-counting model (Arc in Rust, GC in TypeScript/JS) guarantees that in-flight callers holding a reference to the old implementation finish naturally before the old object is released. Across runtimes this guarantee does not apply automatically — the old capability provider process could be shut down while remote callers still have in-flight requests.
+
+In a multi-runtime setup, the component lifecycle must include an explicit drain step:
+
+1. New provider registers on the singleton network (new requests route to it immediately)
+2. Old provider receives a "draining" signal from the CLI/daemon — it stops accepting new requests but finishes in-flight work
+3. Old provider signals completion and shuts down
+
+The drain signal is a lifecycle event orchestrated by the daemon, not a registry primitive. The registry's role ends at step 1.
+
+---
+
+## Multi-Runtime Considerations
+
+The singleton registry API is intentionally identical across all supported languages. This is a feature for single-runtime JigsawFlow apps — all components share one registry and see the same registered values. In multi-runtime setups it creates a non-obvious trap.
+
+### The ownership rule
+
+**Each capability has exactly one owning runtime.** The owner is the source of truth; it is the only runtime that registers the real implementation. All other runtimes that need that capability register a *proxy* implementation of the same contract — a local object that forwards calls to the owner over the transport layer.
+
+```text
+Rust runtime (owner)          Node.js runtime
+──────────────────────        ──────────────────────
+Config (real impl)            Config → RustConfigProxy
+Storage (real impl)           Storage → RustStorageProxy
+                              HttpServer (real impl)
+```
+
+The proxy is explicit about what it does: it goes over the wire. There is no illusion of local state.
+
+### The trap: same contract registered independently in two runtimes
+
+If both Rust and Node.js register their own `Config` without one delegating to the other, they hold two unrelated objects. Updates in one runtime are invisible to the other. No error is raised — the registries are working correctly. The bug is the architecture.
+
+The registry API looking identical in all languages makes this mistake easy to make. The rule — one owner, others use proxies — must be a deliberate architectural decision, not something the registry enforces automatically.
+
+### Local vs. network capabilities
+
+The proxy pattern is also the right model when you want *both* a local and a remote version of the same capability (for example, a local `Config` for offline operation and an authoritative remote `Config` for synchronization). Register them under different contract tokens. The resolution policy — which one to use when — lives in the component that consumes them, not in the registry.
+
+### The singleton network (future)
+
+The singleton network layer, described in the Future Enhancements section of the README, automates proxy generation. When `registry.get(Config)` finds nothing locally, the network layer discovers which runtime owns `Config` and returns a transparent proxy. The ownership rule still applies; the difference is that proxies are generated automatically rather than written manually. The async boundary remains explicit: network-resolved capabilities return a `Promise`/`Future` rather than a synchronous value.
+
 ---
 
 ## Testing Strategies
