@@ -332,6 +332,50 @@ The proxy pattern is also the right model when you want *both* a local and a rem
 
 The singleton network layer, described in the Future Enhancements section of the README, automates proxy generation. When `registry.get(Config)` finds nothing locally, the network layer discovers which runtime owns `Config` and returns a transparent proxy. The ownership rule still applies; the difference is that proxies are generated automatically rather than written manually. The async boundary remains explicit: network-resolved capabilities return a `Promise`/`Future` rather than a synchronous value.
 
+### Embedded Systems and IoT
+
+The L0 registry is just a map and a mutex — no OS, no allocator, no network required. A minimal implementation in C or Rust `no_std` fits in a few kilobytes of flash. This makes JigsawFlow directly applicable to microcontrollers, RTOS targets, and IoT devices, with a unique advantage: **the device can extend its own capabilities at runtime without reflashing**.
+
+#### The core idea: own hardware, proxy everything else
+
+Firmware registers only the capabilities bound to the silicon it runs on — GPIO control, ADC reads, sensor drivers, actuator outputs. Any capability not baked into the firmware (ML inference, remote configuration, structured logging, OTA orchestration) is registered as a network proxy from a connected edge node or development machine. The device's application code calls `registry.get(MLInference)` — it does not know or care whether the implementation runs on-chip or over a serial/IP link.
+
+```text
+Embedded device (owner)        Edge node / development machine
+────────────────────────       ────────────────────────────────
+GPIO        (real impl)        GPIO        → DeviceGPIOProxy
+ADC         (real impl)        ADC         → DeviceADCProxy
+Sensor      (real impl)        Sensor      → DeviceSensorProxy
+                               MLInference (real impl)
+                               Config      (real impl)
+                               Logger      (real impl)
+```
+
+#### Prototyping workflow
+
+1. Flash firmware once — it registers GPIO, ADC, Sensor and nothing else
+2. Connect device to development network (serial, USB-CDC, Wi-Fi, BLE)
+3. Register higher-level capabilities as network proxies from the host — no reflash
+4. Iterate on business logic at host speed; swap proxy implementations freely
+5. As capabilities stabilise, embed them in firmware; application code never changes
+
+This decouples the firmware release cycle from the product iteration cycle. The firmware is stable hardware glue; business logic evolves independently.
+
+#### Language options for constrained targets
+
+- **C with string keys** — suitable for bare-metal and RTOS environments (FreeRTOS, Zephyr, bare Cortex-M). No RTTI available; the token is a `const char *` capability name (or its hash). The contract is a struct of function pointers (vtable pattern). Store vtable structs in static memory — the registry does not own or free them. Use `pthread_mutex_t`, C11 `mtx_t`, or the RTOS mutex primitive for thread safety; on a single-core bare-metal target, an interrupt-disable pair is sufficient.
+
+- **Rust `no_std`** — all JigsawFlow semantics are preserved. Replace `std::collections::HashMap` with `heapless::FnvIndexMap` (fixed-capacity, no heap), and `std::sync::Mutex` with the RTOS primitive (e.g. `cortex_m::interrupt::free` or an RTOS-provided mutex). The `TypeId`-based token mechanism works unchanged in `no_std` since `core::any::TypeId` is available.
+
+- **MicroPython** — for higher-level embedded platforms (ESP32, RP2040 with MicroPython). Python classes are first-class objects and valid dictionary keys; the Python port of the registry applies directly with no adaptation needed.
+
+#### What changes on constrained targets
+
+- **Fixed capacity** — dynamic allocation is often unavailable on bare-metal. `register()` should return an error (or assert) when the backing store is full; document the maximum number of registered capabilities at compile time.
+- **No-heap vtables** — in C, place capability vtable structs in `static const` memory. Passing a stack pointer into the registry is a bug; the registry stores a pointer but does not extend lifetime.
+- **Interrupt-safe locking** — on single-core bare-metal, the only concurrency source is interrupt handlers. An interrupt-disable/enable pair around register/get is simpler and lower-overhead than a mutex.
+- **Drain contract still applies** — when a firmware capability is updated (e.g. a sensor driver is hot-swapped to a new calibration), the edge-node drain protocol still governs in-flight RPCs. The firmware holds the hardware capability; the daemon signals it to finish in-flight work before the new implementation is activated.
+
 ---
 
 ## Testing Strategies
