@@ -544,8 +544,6 @@ Each test file maps to one aspect of the registry's contract:
 
 ## 9. Implementation Checklist
 
-This list mirrors the `PORTING.md` checklist from the Rust crate plus TypeScript-specific items.
-
 - [ ] `RegistryKey<T>` class with stable object identity
 - [ ] `Token<T>` type accepting abstract class constructors, concrete constructors, and `RegistryKey`
 - [ ] `createRegistry()` factory returning isolated `Registry` instance
