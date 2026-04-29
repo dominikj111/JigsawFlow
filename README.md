@@ -20,6 +20,12 @@
 
 ## What is JigsawFlow?
 
+**JigsawFlow** names two complementary things that build on each other:
+
+The **JigsawFlow pattern** is a design discipline: compose your entire application through a flat registry of contracts, wrap every external dependency behind a facade, and degrade gracefully when a capability is absent. You can adopt it in any language, any project size, with no infrastructure beyond the `singleton-registry` primitive — a typed, thread-safe service locator that is the pattern's core mechanism.
+
+The **JigsawFlow Microkernel** is the runtime product built on that pattern: a daemon, CLI, and capability resolution chain that extends single-process composition across processes, languages, and networks. It is the top-level product of the JigsawFlow architecture. A single-process application that uses only the local registry is already a complete JigsawFlow application. The Microkernel is what you add when you need cross-process, cross-language, or distributed capability resolution.
+
 JigsawFlow is a **universal, language-agnostic host for modular applications**. Unlike traditional plugin systems that assume a main application with add-ons, JigsawFlow treats the entire application as modular—the "kernel" is almost invisible, simply enforcing contracts, lifecycle, and hot-swap capabilities.
 
 ### **Core Value Proposition**
@@ -94,7 +100,7 @@ Realizing that widespread community adoption of this pattern could transform app
 
 JigsawFlow is conceptually related to the [Hierarchical Model–View–Controller (HMVC) pattern](https://luminova.ng/docs/3.4.0/introduction/hmvc-design) through its emphasis on self-contained, reusable modules and composition-driven application structure. Like HMVC, JigsawFlow encourages encapsulation of logic, configuration, and lifecycle within discrete units that can be reused across multiple applications and domains.
 
-However, JigsawFlow intentionally extends and generalizes HMVC beyond its traditional scope. While HMVC organizes modules hierarchically and relies on controller dispatch within request-driven application flows, JigsawFlow adopts a flat, capability-based composition model. Components do not form parent–child hierarchies or invoke each other directly; instead, they discover and access required functionality through standardized trait/interface contracts provided by a microkernel-level singleton registry.
+However, JigsawFlow intentionally extends and generalizes HMVC beyond its traditional scope. While HMVC organizes modules hierarchically and relies on controller dispatch within request-driven application flows, JigsawFlow adopts a flat, capability-based composition model. Components do not form parent–child hierarchies or invoke each other directly; instead, they discover and access required functionality through standardized trait/interface contracts provided by the singleton registry.
 
 Furthermore, JigsawFlow is not limited to MVC or web-oriented execution models. The same architectural principles apply to long-running system daemons, desktop applications, embedded systems, and offline-first environments. Capability availability is treated as optional rather than mandatory—components are expected to degrade gracefully when certain capabilities are absent, rather than failing at runtime.
 
@@ -166,7 +172,7 @@ JigsawFlow is a revolutionary microkernel architecture that transforms how enter
 
 **Core Philosophy**: JigsawFlow applications emerge from a **singleton registry** that provides trait/interface-based access to all application capabilities. Components can optionally communicate through event-driven patterns when an event orchestrator component is present, but the registry remains the fundamental architecture. Applications can range from simple single-component solutions to complex event-driven networks, all built on the same registry foundation.
 
-The architecture centers on a **singleton registry microkernel** that provides trait/interface-based access to capabilities, with optional event-driven communication when components require it, creating applications that scale through flat capability access rather than hierarchical structural complexity.
+The architecture centers on a **singleton registry** — the pattern's minimal core primitive — that provides trait/interface-based access to capabilities, with optional event-driven communication when components require it, creating applications that scale through flat capability access rather than hierarchical structural complexity.
 
 ### **What Makes JigsawFlow Different?**
 
@@ -181,7 +187,7 @@ The architecture centers on a **singleton registry microkernel** that provides t
 - **TypeScript**: Type-based registry access
 - **Go**: Interface-based registry access
 
-This microkernel enables **capability-based scaling** where applications grow through registry-provided capabilities rather than structural complexity.
+This registry-first approach enables **capability-based scaling** where applications grow through registry-provided capabilities rather than structural complexity.
 
 ### **Unix Microkernel Principles at Application Level**
 

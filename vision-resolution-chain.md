@@ -8,9 +8,9 @@
 
 ## The Core Idea
 
-The local `singleton-registry` (L0) is synchronous and knows nothing about networks. That is its strength — it is minimal and correct. But there is a natural question: what should happen when a capability is not registered locally?
+The `singleton-registry` (L0) is the core primitive of the JigsawFlow pattern — a typed, thread-safe service locator that is synchronous and knows nothing about networks. That is its strength: it is minimal, correct, and the stable foundation everything else composes on top of. It is not the JigsawFlow Microkernel; it is the mechanism the pattern and the Microkernel are built on.
 
-The answer is a layered resolution chain. Each layer is optional and independently configurable. Together they form a **capability resolution stack** that degrades gracefully at every level.
+The natural question is: what should happen when a capability is not registered locally? The answer is a layered resolution chain. Each layer is optional and independently configurable. Together they form a **capability resolution stack** that degrades gracefully at every level — and that, extended fully, is what the JigsawFlow Microkernel provides.
 
 ---
 
@@ -185,7 +185,7 @@ These two are not mutually exclusive. A runtime could use null objects for criti
 The PLAN.md layer stack gains a clearer mapping:
 
 | Layer | What it is | Resolution chain position |
-|-------|-----------|--------------------------|
+| ----- | ---------- | ------------------------- |
 | L0 | Local sync registry | Step 1 — in-process |
 | L1 | Transport facade | Steps 2–4 transport (IPC → socket → libp2p) |
 | L2 | Singleton network | Steps 2–4 discovery + proxy generation |
