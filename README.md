@@ -551,15 +551,17 @@ This repository contains comprehensive documentation to help you understand and 
 - **[📖 README.md](README.md)** _(this document)_ - Project overview, architecture principles, and getting started guide
 - **[🏗️ Best Practices](best-practices.md)** - Implementation patterns, architectural requirements, and development guidelines for building robust JigsawFlow applications
 - **[💡 Implementation Examples](implementation-examples.md)** - Real-world examples demonstrating JigsawFlow patterns across different technologies and domains
+- **[🔭 Vision: Resolution Chain & Deferred Registry](vision-resolution-chain.md)** - Capability resolution chain, deferred (async) registry design, visibility tiers, security model, and capability hierarchy tree
 
 ### **Quick Navigation**
 
-| Document                       | Purpose                            | Best For                    |
-| ------------------------------ | ---------------------------------- | --------------------------- |
-| **README.md**                  | Architecture overview & philosophy | Understanding core concepts |
-| **best-practices.md**          | Implementation guidance & patterns | Building production systems |
-| **[`examples/`](examples/)**   | Runnable multi-language code       | Running examples locally    |
-| **implementation-examples.md** | Practical code examples            | Learning through examples   |
+| Document                       | Purpose                            | Best For                        |
+| ------------------------------ | ---------------------------------- | ------------------------------- |
+| **README.md**                  | Architecture overview & philosophy | Understanding core concepts     |
+| **best-practices.md**          | Implementation guidance & patterns | Building production systems     |
+| **[`examples/`](examples/)**   | Runnable multi-language code       | Running examples locally        |
+| **implementation-examples.md** | Practical code examples            | Learning through examples       |
+| **vision-resolution-chain.md** | Network registry vision & security | Understanding future direction  |
 
 ---
 
